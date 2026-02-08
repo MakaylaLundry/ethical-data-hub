@@ -50,13 +50,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const token = await getAccessTokenSilently();
           apiClient.setAccessToken(token);
           
-          // Fetch user profile from backend to get persisted role
-          const profile = await apiClient.getUserProfile();
-          setRoleState(profile.role);
+          try {
+            // Try to fetch from backend first
+            const profile = await apiClient.getUserProfile();
+            setRoleState(profile.role);
+          } catch (profileError: unknown) {
+            // If 404, endpoint doesn't exist yet - use localStorage fallback
+            if (profileError instanceof Error && 'status' in profileError && (profileError as { status: number }).status === 404) {
+              const savedRole = localStorage.getItem('user_role');
+              setRoleState(savedRole as UserRole);
+            } else {
+              throw profileError;
+            }
+          }
         } catch (error) {
           console.error('Failed to get access token or fetch profile:', error);
           apiClient.setAccessToken(null);
-          setRoleState(null);
+          // Try localStorage as last resort
+          const savedRole = localStorage.getItem('user_role');
+          setRoleState(savedRole as UserRole);
         } finally {
           setIsRoleLoading(false);
         }
@@ -106,14 +118,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const setRole = async (newRole: UserRole) => {
     if (newRole) {
+      // Save to localStorage as fallback
+      localStorage.setItem('user_role', newRole);
+      
       try {
+        // Try to save to backend (will fail with 404 until endpoint exists)
         await apiClient.updateUserProfile({ role: newRole });
-        setRoleState(newRole);
-      } catch (error) {
-        console.error('Failed to save role to backend:', error);
-        throw error;
+      } catch (error: unknown) {
+        // If 404, backend endpoint doesn't exist yet - that's okay
+        if (!(error instanceof Error && 'status' in error && (error as { status: number }).status === 404)) {
+          console.error('Failed to save role to backend:', error);
+        }
       }
+      
+      setRoleState(newRole);
     } else {
+      localStorage.removeItem('user_role');
       setRoleState(null);
     }
   };
