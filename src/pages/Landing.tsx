@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Building2, Palette, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -12,11 +12,11 @@ export default function Landing() {
   const navigate = useNavigate();
 
   // Redirect if already authenticated with a role
-  if (isAuthenticated && role) {
-    navigate(role === 'artist' ? '/artist/artworks' : '/company/scan');
-    return null;
-  }
-
+  useEffect(() => {
+    if (isAuthenticated && role) {
+      navigate(role === 'artist' ? '/artist/artworks' : '/company/scan', { replace: true });
+    }
+  }, [isAuthenticated, role, navigate]);
   return (
     <div className="min-h-screen bg-background">
       {/* Header - Editorial masthead style */}
