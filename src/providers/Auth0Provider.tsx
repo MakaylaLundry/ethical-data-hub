@@ -27,7 +27,6 @@ export function Auth0ProviderWithNavigate({ children }: Auth0ProviderProps) {
       clientId={clientId}
       authorizationParams={{
         redirect_uri: window.location.origin,
-        audience: audience,
       }}
       onRedirectCallback={onRedirectCallback}
       cacheLocation="localstorage"
