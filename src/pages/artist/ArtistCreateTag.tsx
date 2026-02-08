@@ -9,6 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { uploadArtwork, Permission } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -21,6 +23,7 @@ const useCases = [
   { id: 'style_learning', label: 'Style Learning' },
   { id: 'commercial', label: 'Commercial Use' },
   { id: 'research', label: 'Research Only' },
+  { id: 'other', label: 'Other' },
 ];
 
 export default function ArtistCreateTag() {
@@ -31,6 +34,7 @@ export default function ArtistCreateTag() {
   const [files, setFiles] = useState<File[]>([]);
   const [trainingPermission, setTrainingPermission] = useState<TrainingPermission>('conditional');
   const [allowedUseCases, setAllowedUseCases] = useState<string[]>(['research']);
+  const [otherUseCaseText, setOtherUseCaseText] = useState('');
   const [attributionRequired, setAttributionRequired] = useState(true);
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,6 +46,10 @@ export default function ArtistCreateTag() {
         ? prev.filter((id) => id !== useCaseId)
         : [...prev, useCaseId]
     );
+    // Clear other text when unchecking "other"
+    if (useCaseId === 'other' && allowedUseCases.includes('other')) {
+      setOtherUseCaseText('');
+    }
   };
 
   const handleSubmit = async () => {
@@ -64,6 +72,7 @@ export default function ArtistCreateTag() {
         allowed_use_cases: trainingPermission === 'conditional' ? allowedUseCases : [],
         attribution: attributionRequired,
         notes: notes.trim() || undefined,
+        other_use_case: allowedUseCases.includes('other') ? otherUseCaseText.trim() : undefined,
       };
 
       await uploadArtwork(files[0], permissions, user.id);
@@ -162,17 +171,58 @@ export default function ArtistCreateTag() {
                 <div className="grid grid-cols-2 gap-3">
                   {useCases.map((useCase) => (
                     <div key={useCase.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={useCase.id}
-                        checked={allowedUseCases.includes(useCase.id)}
-                        onCheckedChange={() => handleUseCaseToggle(useCase.id)}
-                      />
-                      <label
-                        htmlFor={useCase.id}
-                        className="text-sm cursor-pointer"
-                      >
-                        {useCase.label}
-                      </label>
+                      {useCase.id === 'other' ? (
+                        <Popover>
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id={useCase.id}
+                              checked={allowedUseCases.includes(useCase.id)}
+                              onCheckedChange={() => handleUseCaseToggle(useCase.id)}
+                            />
+                            <PopoverTrigger asChild>
+                              <label
+                                htmlFor={useCase.id}
+                                className="text-sm cursor-pointer underline decoration-dashed underline-offset-2"
+                              >
+                                {useCase.label}
+                              </label>
+                            </PopoverTrigger>
+                          </div>
+                          {allowedUseCases.includes('other') && (
+                            <PopoverContent className="w-80" align="start">
+                              <div className="space-y-2">
+                                <Label htmlFor="other-use-case" className="text-sm font-medium">
+                                  Specify allowed use case
+                                </Label>
+                                <Input
+                                  id="other-use-case"
+                                  placeholder="e.g., Educational materials only..."
+                                  value={otherUseCaseText}
+                                  onChange={(e) => setOtherUseCaseText(e.target.value)}
+                                  className="text-sm"
+                                />
+                                <p className="text-xs text-muted-foreground">
+                                  Describe what is allowed if not listed above
+                                </p>
+                              </div>
+                            </PopoverContent>
+                          )}
+                        </Popover>
+                      ) : (
+                        <>
+                          <Checkbox
+                            id={useCase.id}
+                            checked={allowedUseCases.includes(useCase.id)}
+                            onCheckedChange={() => handleUseCaseToggle(useCase.id)}
+                          />
+                          <label
+                            htmlFor={useCase.id}
+                            className="text-sm cursor-pointer"
+                          >
+                            {useCase.label}
+                          </label>
+                        </>
+                      )}
                     </div>
                   ))}
                 </div>
