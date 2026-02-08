@@ -17,11 +17,12 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isRoleLoading: boolean;
   role: UserRole;
   login: () => Promise<void>;
   signup: () => Promise<void>;
   logout: () => void;
-  setRole: (role: UserRole) => void;
+  setRole: (role: UserRole) => Promise<void>;
   updateProfile: (data: Partial<User>) => void;
 }
 
@@ -29,6 +30,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [role, setRoleState] = useState<UserRole>(null);
+  const [isRoleLoading, setIsRoleLoading] = useState(false);
   
   const {
     user: auth0User,
@@ -39,23 +41,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     getAccessTokenSilently,
   } = useAuth0();
 
-  // Sync access token to API client whenever auth state changes
+  // Sync access token and fetch user profile from backend
   useEffect(() => {
-    const syncToken = async () => {
+    const syncTokenAndFetchProfile = async () => {
       if (auth0IsAuthenticated) {
+        setIsRoleLoading(true);
         try {
           const token = await getAccessTokenSilently();
           apiClient.setAccessToken(token);
+          
+          // Fetch user profile from backend to get persisted role
+          const profile = await apiClient.getUserProfile();
+          setRoleState(profile.role);
         } catch (error) {
-          console.error('Failed to get access token:', error);
+          console.error('Failed to get access token or fetch profile:', error);
           apiClient.setAccessToken(null);
+          setRoleState(null);
+        } finally {
+          setIsRoleLoading(false);
         }
       } else {
         apiClient.setAccessToken(null);
+        setRoleState(null);
       }
     };
 
-    syncToken();
+    syncTokenAndFetchProfile();
   }, [auth0IsAuthenticated, getAccessTokenSilently]);
 
   // Map Auth0 user to our User type
@@ -93,8 +104,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const setRole = (role: UserRole) => {
-    setRoleState(role);
+  const setRole = async (newRole: UserRole) => {
+    if (newRole) {
+      try {
+        await apiClient.updateUserProfile({ role: newRole });
+        setRoleState(newRole);
+      } catch (error) {
+        console.error('Failed to save role to backend:', error);
+        throw error;
+      }
+    } else {
+      setRoleState(null);
+    }
   };
 
   const updateProfile = (data: Partial<User>) => {
@@ -110,6 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isAuthenticated: auth0IsAuthenticated,
         isLoading: auth0IsLoading,
+        isRoleLoading,
         role,
         login,
         signup,
