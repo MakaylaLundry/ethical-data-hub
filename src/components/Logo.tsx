@@ -1,4 +1,4 @@
-import { useAccessibility } from '@/contexts/AccessibilityContext';
+import { useContext } from 'react';
 import logoLight from '@/assets/logo-light.png';
 import { cn } from '@/lib/utils';
 
@@ -9,7 +9,9 @@ interface LogoProps {
 }
 
 export function Logo({ className, showWordmark = true, size = 'md' }: LogoProps) {
-  const { theme } = useAccessibility();
+  // Check if we're in dark mode by looking at the document class
+  // This avoids the dependency on AccessibilityContext and makes Logo more portable
+  const isDarkMode = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
   
   const sizeClasses = {
     sm: 'h-8',
@@ -24,7 +26,7 @@ export function Logo({ className, showWordmark = true, size = 'md' }: LogoProps)
   };
 
   // The logo is white on black - in light mode we invert it, in dark mode we use it as-is
-  const shouldInvert = theme === 'light';
+  const shouldInvert = !isDarkMode;
 
   return (
     <div className={cn('ink-masthead', className)}>
@@ -34,7 +36,8 @@ export function Logo({ className, showWordmark = true, size = 'md' }: LogoProps)
         className={cn(
           sizeClasses[size],
           'w-auto transition-all duration-200',
-          shouldInvert && 'invert'
+          // Use dark: variant for automatic theme-aware inversion
+          'invert dark:invert-0'
         )}
       />
       {showWordmark && (
