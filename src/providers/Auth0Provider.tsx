@@ -1,6 +1,6 @@
-import { Auth0Provider as Auth0ProviderBase } from '@auth0/auth0-react';
-import { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Auth0Provider as Auth0ProviderBase } from "@auth0/auth0-react";
+import { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Auth0ProviderProps {
   children: ReactNode;
@@ -11,14 +11,13 @@ export function Auth0ProviderWithNavigate({ children }: Auth0ProviderProps) {
 
   const domain = import.meta.env.VITE_AUTH0_DOMAIN;
   const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
-  const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
 
   const onRedirectCallback = (appState?: { returnTo?: string }) => {
-    navigate(appState?.returnTo || '/onboarding');
+    navigate(appState?.returnTo || "/onboarding");
   };
 
   if (!domain || !clientId) {
-    console.error('Auth0 configuration missing. Please set VITE_AUTH0_DOMAIN and VITE_AUTH0_CLIENT_ID');
+    console.error("Auth0 configuration missing. Please set VITE_AUTH0_DOMAIN and VITE_AUTH0_CLIENT_ID");
     return <>{children}</>;
   }
 
