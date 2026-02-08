@@ -41,8 +41,9 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   // Apply text scale with smooth transition
   useEffect(() => {
     const root = document.documentElement;
+    // Use CSS custom property for text scaling so we can exclude certain elements
+    root.style.setProperty('--text-scale', textScale.toString());
     root.style.fontSize = `${textScale * 100}%`;
-    root.style.transition = 'font-size 0.15s ease-out';
   }, [textScale]);
 
   const setTheme = (newTheme: Theme) => {
