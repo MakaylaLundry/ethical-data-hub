@@ -2,15 +2,14 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 
 type Theme = 'light' | 'dark';
 type ColorblindMode = 'none' | 'deuteranopia' | 'protanopia' | 'tritanopia';
-type TextSize = 100 | 110 | 120 | 130 | 140 | 150;
 
 interface AccessibilityContextType {
   theme: Theme;
   colorblindMode: ColorblindMode;
-  textSize: TextSize;
+  textScale: number; // 0.8 to 2.0
   setTheme: (theme: Theme) => void;
   setColorblindMode: (mode: ColorblindMode) => void;
-  setTextSize: (size: TextSize) => void;
+  setTextScale: (scale: number) => void;
 }
 
 const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
@@ -18,7 +17,7 @@ const AccessibilityContext = createContext<AccessibilityContextType | undefined>
 export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>('dark');
   const [colorblindMode, setColorblindModeState] = useState<ColorblindMode>('none');
-  const [textSize, setTextSizeState] = useState<TextSize>(100);
+  const [textScale, setTextScaleState] = useState<number>(1);
 
   // Apply theme
   useEffect(() => {
@@ -39,14 +38,12 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     }
   }, [colorblindMode]);
 
-  // Apply text size
+  // Apply text scale with smooth transition
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.remove('text-size-110', 'text-size-120', 'text-size-130', 'text-size-140', 'text-size-150');
-    if (textSize !== 100) {
-      root.classList.add(`text-size-${textSize}`);
-    }
-  }, [textSize]);
+    root.style.fontSize = `${textScale * 100}%`;
+    root.style.transition = 'font-size 0.15s ease-out';
+  }, [textScale]);
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
@@ -58,20 +55,22 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('inkscape-colorblind', mode);
   };
 
-  const setTextSize = (size: TextSize) => {
-    setTextSizeState(size);
-    localStorage.setItem('inkscape-textsize', size.toString());
+  const setTextScale = (scale: number) => {
+    // Clamp between 0.8 and 2.0
+    const clampedScale = Math.min(2, Math.max(0.8, scale));
+    setTextScaleState(clampedScale);
+    localStorage.setItem('inkscape-textscale', clampedScale.toString());
   };
 
   // Load saved preferences
   useEffect(() => {
     const savedTheme = localStorage.getItem('inkscape-theme') as Theme | null;
     const savedColorblind = localStorage.getItem('inkscape-colorblind') as ColorblindMode | null;
-    const savedTextSize = localStorage.getItem('inkscape-textsize');
+    const savedTextScale = localStorage.getItem('inkscape-textscale');
 
     if (savedTheme) setThemeState(savedTheme);
     if (savedColorblind) setColorblindModeState(savedColorblind);
-    if (savedTextSize) setTextSizeState(parseInt(savedTextSize) as TextSize);
+    if (savedTextScale) setTextScaleState(parseFloat(savedTextScale));
   }, []);
 
   return (
@@ -79,10 +78,10 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
       value={{
         theme,
         colorblindMode,
-        textSize,
+        textScale,
         setTheme,
         setColorblindMode,
-        setTextSize,
+        setTextScale,
       }}
     >
       {children}

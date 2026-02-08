@@ -253,12 +253,10 @@
     letter-spacing: -0.02em;
   }
 
-  /* Text size accessibility */
-  html.text-size-110 { font-size: 110%; }
-  html.text-size-120 { font-size: 120%; }
-  html.text-size-130 { font-size: 130%; }
-  html.text-size-140 { font-size: 140%; }
-  html.text-size-150 { font-size: 150%; }
+  /* Smooth text size transitions */
+  html {
+    transition: font-size 0.15s ease-out;
+  }
 }
 
 @layer components {
