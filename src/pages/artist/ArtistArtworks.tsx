@@ -4,6 +4,7 @@ import { Plus, Image as ImageIcon, Tag, Trash2, Edit, Loader2 } from 'lucide-rea
 import { useAuth } from '@/contexts/AuthContext';
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 import { StatusBadge } from '@/components/StatusBadge';
+import { InkDivider } from '@/components/InkAccent';
 import { Button } from '@/components/ui/button';
 import { getArtworks, revokeTag, ArtworkTag } from '@/services/api';
 import {
@@ -72,7 +73,8 @@ export default function ArtistArtworks() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold mb-1">My Artworks</h1>
+          <p className="ink-section-title">Portfolio</p>
+          <h1 className="font-serif text-2xl font-semibold mb-1">My Artworks</h1>
           <p className="text-muted-foreground">
             Manage your tagged artworks and permissions
           </p>
@@ -92,10 +94,10 @@ export default function ArtistArtworks() {
         </div>
       ) : artworks.length === 0 ? (
         <div className="ink-card text-center py-16">
-          <div className="p-4 rounded-full bg-accent inline-block mb-4">
+          <div className="p-4 rounded-sm bg-accent inline-block mb-4">
             <ImageIcon className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h2 className="text-xl font-semibold mb-2">No artworks yet</h2>
+          <h2 className="font-serif text-xl font-semibold mb-2">No artworks yet</h2>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
             Upload your first artwork and generate a security tag to protect it from unauthorized AI training.
           </p>
@@ -111,7 +113,7 @@ export default function ArtistArtworks() {
           {artworks.map((artwork) => (
             <div key={artwork.id} className="ink-card-hover group">
               {/* Image Preview */}
-              <div className="aspect-video rounded-lg bg-accent overflow-hidden mb-4">
+              <div className="aspect-video rounded-sm bg-accent overflow-hidden mb-4">
                 <img
                   src={artwork.file_url}
                   alt={artwork.file_name}
@@ -137,7 +139,7 @@ export default function ArtistArtworks() {
                     {artwork.permissions.allowed_use_cases.map((useCase) => (
                       <span
                         key={useCase}
-                        className="px-2 py-0.5 text-xs rounded bg-accent text-muted-foreground"
+                        className="px-2 py-0.5 text-xs rounded-sm bg-accent text-muted-foreground"
                       >
                         {useCase}
                       </span>
@@ -173,7 +175,7 @@ export default function ArtistArtworks() {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Revoke security tag?</AlertDialogTitle>
+                        <AlertDialogTitle className="font-serif">Revoke security tag?</AlertDialogTitle>
                         <AlertDialogDescription>
                           This will remove the security tag from "{artwork.file_name}". 
                           Companies will no longer be able to verify permissions for this artwork.

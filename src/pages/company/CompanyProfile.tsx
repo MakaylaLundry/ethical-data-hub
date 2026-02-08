@@ -67,7 +67,8 @@ export default function CompanyProfile() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-1">Company Profile</h1>
+        <p className="ink-section-title">Settings</p>
+        <h1 className="font-serif text-2xl font-semibold mb-1">Company Profile</h1>
         <p className="text-muted-foreground">
           Set up your company information for compliance tracking
         </p>
@@ -77,11 +78,11 @@ export default function CompanyProfile() {
         <div className="ink-card space-y-6">
           {/* Company Icon */}
           <div className="flex items-center gap-4 pb-6 border-b border-border">
-            <div className="p-4 rounded-xl bg-primary/10">
+            <div className="p-4 rounded-sm bg-primary/10">
               <Building2 className="h-8 w-8 text-primary" />
             </div>
             <div>
-              <h2 className="font-semibold">Company Details</h2>
+              <h2 className="font-serif font-semibold">Company Details</h2>
               <p className="text-sm text-muted-foreground">
                 This information helps artists understand who is using their work
               </p>
@@ -97,13 +98,14 @@ export default function CompanyProfile() {
                 placeholder="Your company name"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
+                className="rounded-sm"
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="useCase">Primary AI Use Case</Label>
               <Select value={useCase} onValueChange={setUseCase}>
-                <SelectTrigger>
+                <SelectTrigger className="rounded-sm">
                   <SelectValue placeholder="Select your primary use case" />
                 </SelectTrigger>
                 <SelectContent>
@@ -124,6 +126,7 @@ export default function CompanyProfile() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
+                className="rounded-sm"
               />
             </div>
           </div>

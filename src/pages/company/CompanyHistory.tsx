@@ -43,7 +43,8 @@ export default function CompanyHistory() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold mb-1">Scan History</h1>
+          <p className="ink-section-title">Archive</p>
+          <h1 className="font-serif text-2xl font-semibold mb-1">Scan History</h1>
           <p className="text-muted-foreground">
             View past dataset scans and results
           </p>
@@ -63,10 +64,10 @@ export default function CompanyHistory() {
         </div>
       ) : scans.length === 0 ? (
         <div className="ink-card text-center py-16">
-          <div className="p-4 rounded-full bg-accent inline-block mb-4">
+          <div className="p-4 rounded-sm bg-accent inline-block mb-4">
             <History className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h2 className="text-xl font-semibold mb-2">No scans yet</h2>
+          <h2 className="font-serif text-xl font-semibold mb-2">No scans yet</h2>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
             Start by scanning a dataset to check for compliance with artist permissions.
           </p>
@@ -107,7 +108,7 @@ export default function CompanyHistory() {
                   <div className="border-t border-border pt-4">
                     <table className="w-full">
                       <thead>
-                        <tr className="text-left text-sm text-muted-foreground">
+                        <tr className="text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                           <th className="pb-2">Filename</th>
                           <th className="pb-2">Artist</th>
                           <th className="pb-2">Status</th>

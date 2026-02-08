@@ -63,7 +63,8 @@ export default function ArtistCompliance() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-1">Compliance Logs</h1>
+        <p className="ink-section-title">Activity</p>
+        <h1 className="font-serif text-2xl font-semibold mb-1">Compliance Logs</h1>
         <p className="text-muted-foreground">
           Track how companies are using your artwork
         </p>
@@ -76,10 +77,10 @@ export default function ArtistCompliance() {
         </div>
       ) : logs.length === 0 ? (
         <div className="ink-card text-center py-16">
-          <div className="p-4 rounded-full bg-accent inline-block mb-4">
+          <div className="p-4 rounded-sm bg-accent inline-block mb-4">
             <FileText className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h2 className="text-xl font-semibold mb-2">No compliance logs yet</h2>
+          <h2 className="font-serif text-xl font-semibold mb-2">No compliance logs yet</h2>
           <p className="text-muted-foreground max-w-md mx-auto">
             When companies scan datasets containing your tagged artwork, you'll see the activity here.
           </p>
@@ -90,19 +91,19 @@ export default function ArtistCompliance() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="px-6 py-4 text-left text-sm font-medium text-muted-foreground">
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Company
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-muted-foreground">
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Artwork
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-muted-foreground">
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Use Case
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-muted-foreground">
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Date
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-muted-foreground">
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Outcome
                   </th>
                 </tr>
@@ -117,7 +118,7 @@ export default function ArtistCompliance() {
                       {log.artwork_name}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-accent">
+                      <span className="px-2.5 py-1 text-xs font-medium rounded-sm bg-accent">
                         {log.use_case}
                       </span>
                     </td>

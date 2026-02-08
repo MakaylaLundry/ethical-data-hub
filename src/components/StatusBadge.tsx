@@ -42,7 +42,8 @@ export function StatusBadge({ status, className, showIcon = true }: StatusBadgeP
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium',
+        // Editorial: squared badge, not pill-shaped
+        'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm text-xs font-medium',
         config.className,
         className
       )}

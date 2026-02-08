@@ -9,10 +9,10 @@ import {
   User,
   LogOut,
   Menu,
-  Shield,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AccessibilitySettings } from '@/components/AccessibilitySettings';
+import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -47,7 +47,7 @@ function NavItems({ items, currentPath }: { items: typeof artistNavItems; curren
             key={item.path}
             to={item.path}
             className={cn(
-              'flex items-center gap-3 px-4 py-3 rounded-lg',
+              'flex items-center gap-3 px-4 py-3 rounded-sm',
               'text-sm font-medium transition-colors',
               isActive
                 ? 'bg-primary text-primary-foreground'
@@ -78,17 +78,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
-      {/* Logo */}
+      {/* Logo - Editorial masthead */}
       <div className="p-6 border-b border-border">
-        <Link to="/" className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Shield className="h-6 w-6 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-lg font-semibold">Inkscape</h1>
-            <p className="text-xs text-muted-foreground">{dashboardTitle}</p>
-          </div>
+        <Link to="/" className="block">
+          <Logo size="md" />
         </Link>
+        <p className="ink-section-title mt-3 mb-0">{dashboardTitle}</p>
       </div>
 
       {/* Navigation */}
@@ -99,7 +94,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* User section */}
       <div className="p-4 border-t border-border">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-sm bg-primary/10 flex items-center justify-center">
             <User className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1 min-w-0">

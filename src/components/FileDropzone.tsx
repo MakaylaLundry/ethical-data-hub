@@ -77,11 +77,11 @@ export function FileDropzone({
         className={cn(
           'relative flex flex-col items-center justify-center',
           'w-full min-h-[200px] p-8',
-          'border-2 border-dashed rounded-xl',
+          'border-2 border-dashed rounded-sm',
           'transition-all duration-200 cursor-pointer',
           'hover:border-primary/50 hover:bg-accent/50',
           isDragging
-            ? 'border-primary bg-primary/5 scale-[1.02]'
+            ? 'border-primary bg-primary/5 scale-[1.01]'
             : 'border-border bg-card',
         )}
       >
@@ -100,7 +100,7 @@ export function FileDropzone({
           isDragging && 'scale-95'
         )}>
           <div className={cn(
-            'p-4 rounded-full',
+            'p-4 rounded-sm',
             isDragging ? 'bg-primary/10' : 'bg-accent'
           )}>
             {isZipAccepted ? (
@@ -147,9 +147,9 @@ export function FileDropzone({
             {selectedFiles.map((file, index) => (
               <div
                 key={`${file.name}-${index}`}
-                className="flex items-center gap-3 p-3 bg-accent/50 rounded-lg group"
+                className="flex items-center gap-3 p-3 bg-accent/50 rounded-sm group"
               >
-                <div className="p-2 bg-background rounded-md">
+                <div className="p-2 bg-background rounded-sm">
                   <FileImage className="w-4 h-4 text-muted-foreground" />
                 </div>
                 <div className="flex-1 min-w-0">
