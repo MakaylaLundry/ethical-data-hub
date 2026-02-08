@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 export default function Onboarding() {
   const [selectedRole, setSelectedRole] = useState<UserRole>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setRole, isAuthenticated, isLoading } = useAuth();
+  const { setRole, isAuthenticated, isLoading, isRoleLoading, role } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if not authenticated (after loading is complete)
@@ -20,8 +20,16 @@ export default function Onboarding() {
     }
   }, [isLoading, isAuthenticated, navigate]);
 
-  // Show loading state while Auth0 is checking session
-  if (isLoading) {
+  // Redirect if user already has a role (skip onboarding)
+  useEffect(() => {
+    if (!isLoading && !isRoleLoading && isAuthenticated && role) {
+      const path = role === 'artist' ? '/artist/artworks' : '/company/profile';
+      navigate(path);
+    }
+  }, [isLoading, isRoleLoading, isAuthenticated, role, navigate]);
+
+  // Show loading state while Auth0 is checking session or fetching role
+  if (isLoading || isRoleLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -38,11 +46,17 @@ export default function Onboarding() {
     if (!selectedRole) return;
     
     setIsSubmitting(true);
-    setRole(selectedRole);
-    
-    // Navigate to appropriate dashboard
-    const path = selectedRole === 'artist' ? '/artist/artworks' : '/company/profile';
-    navigate(path);
+    try {
+      // Save role to backend (this will persist it)
+      await setRole(selectedRole);
+      
+      // Navigate to appropriate dashboard
+      const path = selectedRole === 'artist' ? '/artist/artworks' : '/company/profile';
+      navigate(path);
+    } catch (error) {
+      console.error('Failed to save role:', error);
+      setIsSubmitting(false);
+    }
   };
 
   const roles = [

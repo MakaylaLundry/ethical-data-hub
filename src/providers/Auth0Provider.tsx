@@ -21,12 +21,15 @@ export function Auth0ProviderWithNavigate({ children }: Auth0ProviderProps) {
     return <>{children}</>;
   }
 
+  const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
+
   return (
     <Auth0ProviderBase
       domain={domain}
       clientId={clientId}
       authorizationParams={{
         redirect_uri: window.location.origin,
+        audience: audience,
       }}
       onRedirectCallback={onRedirectCallback}
       cacheLocation="localstorage"

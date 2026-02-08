@@ -135,6 +135,19 @@ class ApiClient {
   async getComplianceEvents(): Promise<ComplianceEvent[]> {
     return this.request('/api/v1/artist/compliance');
   }
+
+  // ==================== User Profile Endpoints ====================
+
+  async getUserProfile(): Promise<UserProfile> {
+    return this.request('/api/v1/user/profile');
+  }
+
+  async updateUserProfile(data: UserProfileUpdate): Promise<UserProfile> {
+    return this.request('/api/v1/user/profile', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
 }
 
 // Custom error class for API errors
@@ -233,6 +246,17 @@ export interface ComplianceEvent {
   artwork_name: string;
   eventType?: 'match' | 'similarity';
   similarity_score?: number;
+}
+
+export interface UserProfile {
+  auth0_sub: string;
+  role: 'artist' | 'company' | null;
+  email?: string;
+  name?: string;
+}
+
+export interface UserProfileUpdate {
+  role: 'artist' | 'company';
 }
 
 // Export singleton instance
