@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { uploadArtwork, Permission } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { ListenForHelp } from '@/components/ListenForHelp';
 
 type TrainingPermission = 'yes' | 'no' | 'conditional';
 
@@ -141,7 +142,13 @@ export default function ArtistCreateTag() {
         <div className="space-y-6">
           {/* Training Permission */}
           <div className="ink-card">
-            <h2 className="font-serif text-lg font-semibold mb-4">AI Training Permission</h2>
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className="font-serif text-lg font-semibold">AI Training Permission</h2>
+              <ListenForHelp
+                title="Permission Settings"
+                explanation="Choose how AI companies can use your artwork. 'Allow' means anyone can train on it freely. 'Conditional' lets you specify exactly which uses are permitted, like research only or requiring attribution. 'Deny' blocks all AI training. You can change these settings anytime."
+              />
+            </div>
             
             <div className="grid grid-cols-3 gap-2 mb-6">
               <button

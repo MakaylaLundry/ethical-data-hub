@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
+import { ListenForHelp } from '@/components/ListenForHelp';
 
 export function AccessibilitySettings() {
   const {
@@ -37,10 +38,17 @@ export function AccessibilitySettings() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-72 p-4">
-        <DropdownMenuLabel className="flex items-center gap-2 text-base font-semibold">
-          <Eye className="h-4 w-4" />
-          Accessibility
-        </DropdownMenuLabel>
+        <div className="flex items-center justify-between mb-1">
+          <DropdownMenuLabel className="flex items-center gap-2 text-base font-semibold p-0">
+            <Eye className="h-4 w-4" />
+            Accessibility
+          </DropdownMenuLabel>
+          <ListenForHelp
+            title="Accessibility Options"
+            explanation="These settings help customize your viewing experience. Switch between light and dark themes. Choose a color vision mode if you have difficulty distinguishing certain colors. Adjust the text size from 80% to 200% for easier reading. All changes are saved automatically."
+            className="h-6 px-1"
+          />
+        </div>
         <DropdownMenuSeparator className="my-3" />
         
         {/* Theme Toggle */}
