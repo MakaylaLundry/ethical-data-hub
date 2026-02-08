@@ -12,9 +12,9 @@ export function Logo({ className, showWordmark = true, size = 'md' }: LogoProps)
   const { theme } = useAccessibility();
   
   const sizeClasses = {
-    sm: 'h-6',
-    md: 'h-8',
-    lg: 'h-10',
+    sm: 'h-8',
+    md: 'h-10',
+    lg: 'h-14',
   };
 
   const wordmarkSizes = {
