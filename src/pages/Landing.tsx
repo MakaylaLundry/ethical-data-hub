@@ -199,15 +199,14 @@ export default function Landing() {
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
             If something isn't working or you have a concern, you can contact the team directly.
           </p>
-          <a
-            href="mailto:lundrymakayla@gmail.com,rfarrales@gmail.com"
-            className="inline-flex"
+          <Button 
+            variant="outline" 
+            className="gap-2"
+            onClick={() => window.open('mailto:lundrymakayla@gmail.com,rfarrales@gmail.com', '_blank')}
           >
-            <Button variant="outline" className="gap-2">
-              <Mail className="h-4 w-4" />
-              Email the Founders
-            </Button>
-          </a>
+            <Mail className="h-4 w-4" />
+            Email the Founders
+          </Button>
         </div>
       </section>
 
