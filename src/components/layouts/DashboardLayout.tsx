@@ -69,8 +69,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const navItems = role === 'artist' ? artistNavItems : companyNavItems;
-  const dashboardTitle = role === 'artist' ? 'Artist Dashboard' : 'Company Dashboard';
+  // Infer role from URL path as fallback when state is not available
+  const inferredRole = location.pathname.startsWith('/artist') 
+    ? 'artist' 
+    : location.pathname.startsWith('/company') 
+      ? 'company' 
+      : null;
+
+  const effectiveRole = role || inferredRole;
+  const navItems = effectiveRole === 'artist' ? artistNavItems : companyNavItems;
+  const dashboardTitle = effectiveRole === 'artist' ? 'Artist Dashboard' : 'Company Dashboard';
 
   const handleLogout = () => {
     logout();
