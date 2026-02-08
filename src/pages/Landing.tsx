@@ -1,11 +1,22 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Building2, Palette, CheckCircle } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { AccessibilitySettings } from '@/components/AccessibilitySettings';
 import { Logo } from '@/components/Logo';
 import { InkAccent, InkDivider } from '@/components/InkAccent';
 import { Button } from '@/components/ui/button';
 
 export default function Landing() {
+  const { isAuthenticated, role } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect if already authenticated with a role
+  if (isAuthenticated && role) {
+    navigate(role === 'artist' ? '/artist/artworks' : '/company/scan');
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header - Editorial masthead style */}
@@ -54,11 +65,7 @@ export default function Landing() {
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
-            <Button 
-              size="lg" 
-              variant="outline"
-              onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-            >
+            <Button size="lg" variant="outline">
               Learn how it works
             </Button>
           </div>
@@ -150,7 +157,7 @@ export default function Landing() {
       <InkDivider className="max-w-4xl mx-auto" />
 
       {/* How it works - Editorial numbered sections */}
-      <section id="how-it-works" className="py-20 px-4">
+      <section className="py-20 px-4">
         <div className="container max-w-4xl mx-auto">
           <p className="ink-section-title text-center">The Process</p>
           <h2 className="font-serif text-2xl md:text-3xl font-semibold text-center mb-12">

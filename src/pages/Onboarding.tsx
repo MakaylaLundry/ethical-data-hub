@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Palette, Building2, ArrowRight, Loader2 } from 'lucide-react';
+import { Palette, Building2, ArrowRight } from 'lucide-react';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
 import { Logo } from '@/components/Logo';
 import { InkAccent } from '@/components/InkAccent';
@@ -9,54 +9,25 @@ import { cn } from '@/lib/utils';
 
 export default function Onboarding() {
   const [selectedRole, setSelectedRole] = useState<UserRole>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setRole, isAuthenticated, isLoading, isRoleLoading, role } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const { setRole, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if not authenticated (after loading is complete)
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      navigate('/login');
-    }
-  }, [isLoading, isAuthenticated, navigate]);
-
-  // Redirect if user already has a role (skip onboarding)
-  useEffect(() => {
-    if (!isLoading && !isRoleLoading && isAuthenticated && role) {
-      const path = role === 'artist' ? '/artist/artworks' : '/company/profile';
-      navigate(path);
-    }
-  }, [isLoading, isRoleLoading, isAuthenticated, role, navigate]);
-
-  // Show loading state while Auth0 is checking session or fetching role
-  if (isLoading || isRoleLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  // Don't render if not authenticated
+  // Redirect if not authenticated
   if (!isAuthenticated) {
+    navigate('/login');
     return null;
   }
 
   const handleContinue = async () => {
     if (!selectedRole) return;
     
-    setIsSubmitting(true);
-    try {
-      // Save role to backend (this will persist it)
-      await setRole(selectedRole);
-      
-      // Navigate to appropriate dashboard
-      const path = selectedRole === 'artist' ? '/artist/artworks' : '/company/profile';
-      navigate(path);
-    } catch (error) {
-      console.error('Failed to save role:', error);
-      setIsSubmitting(false);
-    }
+    setIsLoading(true);
+    setRole(selectedRole);
+    
+    // Navigate to appropriate dashboard
+    const path = selectedRole === 'artist' ? '/artist/artworks' : '/company/profile';
+    navigate(path);
   };
 
   const roles = [
@@ -156,11 +127,11 @@ export default function Onboarding() {
         <div className="flex justify-center">
           <Button
             size="lg"
-            disabled={!selectedRole || isSubmitting}
+            disabled={!selectedRole || isLoading}
             onClick={handleContinue}
             className="gap-2 min-w-[200px]"
           >
-            {isSubmitting ? 'Setting up...' : 'Continue'}
+            {isLoading ? 'Setting up...' : 'Continue'}
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>

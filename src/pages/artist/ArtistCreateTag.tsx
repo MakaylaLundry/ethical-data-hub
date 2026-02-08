@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tag, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Tag, Loader2, CheckCircle } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 import { FileDropzone } from '@/components/FileDropzone';
 import { Button } from '@/components/ui/button';
@@ -10,11 +11,9 @@ import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { apiClient, ApiError } from '@/lib/apiClient';
-import type { ArtistPermissions } from '@/lib/apiTypes';
+import { uploadArtwork, Permission } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { ListenForHelp } from '@/components/ListenForHelp';
 
 type TrainingPermission = 'yes' | 'no' | 'conditional';
 
@@ -28,6 +27,7 @@ const useCases = [
 ];
 
 export default function ArtistCreateTag() {
+  const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -39,7 +39,6 @@ export default function ArtistCreateTag() {
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleUseCaseToggle = (useCaseId: string) => {
     setAllowedUseCases((prev) =>
@@ -63,11 +62,12 @@ export default function ArtistCreateTag() {
       return;
     }
 
+    if (!user) return;
+
     setIsSubmitting(true);
-    setError(null);
 
     try {
-      const permissions: ArtistPermissions = {
+      const permissions: Permission = {
         ai_training: trainingPermission,
         allowed_use_cases: trainingPermission === 'conditional' ? allowedUseCases : [],
         attribution: attributionRequired,
@@ -75,7 +75,7 @@ export default function ArtistCreateTag() {
         other_use_case: allowedUseCases.includes('other') ? otherUseCaseText.trim() : undefined,
       };
 
-      await apiClient.uploadArtwork(files, permissions);
+      await uploadArtwork(files[0], permissions, user.id);
 
       setIsSuccess(true);
       toast({
@@ -87,12 +87,10 @@ export default function ArtistCreateTag() {
       setTimeout(() => {
         navigate('/artist/artworks');
       }, 1500);
-    } catch (err) {
-      const message = err instanceof ApiError ? err.message : 'Could not create security tag. Please try again.';
-      setError(message);
+    } catch (error) {
       toast({
         title: 'Error',
-        description: message,
+        description: 'Could not create security tag. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -126,14 +124,6 @@ export default function ArtistCreateTag() {
         </p>
       </div>
 
-      {/* Error display */}
-      {error && (
-        <div className="mb-6 p-4 rounded-sm bg-destructive/10 border border-destructive/20 flex items-center gap-3 text-destructive">
-          <AlertCircle className="h-5 w-5 flex-shrink-0" />
-          <p className="text-sm">{error}</p>
-        </div>
-      )}
-
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Left: Upload */}
         <div className="space-y-6">
@@ -142,13 +132,8 @@ export default function ArtistCreateTag() {
             <FileDropzone
               onFilesSelected={setFiles}
               accept="image/*"
-              multiple
+              multiple={false}
             />
-            {files.length > 1 && (
-              <p className="text-sm text-muted-foreground mt-2">
-                {files.length} files selected for batch upload
-              </p>
-            )}
           </div>
         </div>
 
@@ -156,13 +141,7 @@ export default function ArtistCreateTag() {
         <div className="space-y-6">
           {/* Training Permission */}
           <div className="ink-card">
-            <div className="flex items-center gap-2 mb-4">
-              <h2 className="font-serif text-lg font-semibold">AI Training Permission</h2>
-              <ListenForHelp
-                title="Permission Settings"
-                explanation="Choose how AI companies can use your artwork. 'Allow' means anyone can train on it freely. 'Conditional' lets you specify exactly which uses are permitted, like research only or requiring attribution. 'Deny' blocks all AI training. You can change these settings anytime."
-              />
-            </div>
+            <h2 className="font-serif text-lg font-semibold mb-4">AI Training Permission</h2>
             
             <div className="grid grid-cols-3 gap-2 mb-6">
               <button
@@ -280,19 +259,6 @@ export default function ArtistCreateTag() {
             </div>
           </div>
 
-          {/* Notes */}
-          <div className="ink-card">
-            <Label htmlFor="notes" className="font-medium">Additional Notes (Optional)</Label>
-            <Textarea
-              id="notes"
-              placeholder="Any additional terms or notes..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-              className="mt-2 rounded-sm"
-            />
-          </div>
-
           {/* Submit */}
           <Button
             size="lg"
@@ -303,12 +269,12 @@ export default function ArtistCreateTag() {
             {isSubmitting ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Generating Tag{files.length > 1 ? 's' : ''}...
+                Generating Tag...
               </>
             ) : (
               <>
                 <Tag className="h-4 w-4" />
-                Generate Security Tag{files.length > 1 ? 's' : ''}
+                Generate Security Tag
               </>
             )}
           </Button>

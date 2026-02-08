@@ -1,38 +1,43 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AccessibilitySettings } from '@/components/AccessibilitySettings';
 import { Logo } from '@/components/Logo';
 import { InkAccent } from '@/components/InkAccent';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export default function Login() {
-  const { login, isAuthenticated, isLoading, role } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  
+  const { login, role } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // If already authenticated, redirect based on role
-    if (isAuthenticated && !isLoading) {
-      if (role) {
-        navigate(role === 'artist' ? '/artist/artworks' : '/company/scan');
-      } else {
-        navigate('/onboarding');
-      }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    
+    if (!email || !password) {
+      setError('Please fill in all fields');
+      return;
     }
-  }, [isAuthenticated, isLoading, role, navigate]);
-
-  const handleLogin = async () => {
-    await login();
+    
+    setIsLoading(true);
+    try {
+      await login(email, password);
+      navigate('/onboarding');
+    } catch (err) {
+      setError('Invalid credentials. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -58,19 +63,60 @@ export default function Login() {
               <p className="text-muted-foreground text-sm">Continue protecting creative work</p>
             </div>
 
-            <div className="space-y-4">
-              <Button onClick={handleLogin} className="w-full" size="lg">
-                Sign in with Auth0
-              </Button>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <div className="p-3 rounded-sm bg-destructive/10 text-destructive text-sm border border-destructive/20">
+                  {error}
+                </div>
+              )}
 
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground">
-                  Don't have an account?{' '}
-                  <Link to="/signup" className="text-primary hover:underline font-medium">
-                    Sign up
-                  </Link>
-                </p>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  className="rounded-sm"
+                />
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                    className="pr-10 rounded-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? 'Signing in...' : 'Sign in'}
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-sm text-muted-foreground">
+                Don't have an account?{' '}
+                <Link to="/signup" className="text-primary hover:underline font-medium">
+                  Sign up
+                </Link>
+              </p>
             </div>
           </div>
         </div>

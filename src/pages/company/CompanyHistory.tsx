@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
-import { apiClient } from '@/lib/apiClient';
-import type { ScanResult } from '@/lib/apiTypes';
+import { getScanHistory, ScanResult } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 import {
   Accordion,
@@ -26,7 +25,7 @@ export default function CompanyHistory() {
   const loadHistory = async () => {
     setIsLoading(true);
     try {
-      const data = await apiClient.getScanHistory();
+      const data = await getScanHistory();
       setScans(data);
     } catch (error) {
       toast({

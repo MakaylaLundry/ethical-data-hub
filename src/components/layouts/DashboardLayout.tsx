@@ -12,8 +12,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AccessibilitySettings } from '@/components/AccessibilitySettings';
-import { BackendStatus } from '@/components/BackendStatus';
-import { AuthStatus } from '@/components/AuthStatus';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import {
@@ -70,16 +68,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Infer role from URL path as fallback when state is not available
-  const inferredRole = location.pathname.startsWith('/artist') 
-    ? 'artist' 
-    : location.pathname.startsWith('/company') 
-      ? 'company' 
-      : null;
-
-  const effectiveRole = role || inferredRole;
-  const navItems = effectiveRole === 'artist' ? artistNavItems : companyNavItems;
-  const dashboardTitle = effectiveRole === 'artist' ? 'Artist Dashboard' : 'Company Dashboard';
+  const navItems = role === 'artist' ? artistNavItems : companyNavItems;
+  const dashboardTitle = role === 'artist' ? 'Artist Dashboard' : 'Company Dashboard';
 
   const handleLogout = () => {
     logout();
@@ -151,8 +141,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
           {/* Right side actions */}
           <div className="flex items-center gap-2">
-            <BackendStatus showUrl />
-            <AuthStatus showRole />
             <AccessibilitySettings />
           </div>
         </header>
