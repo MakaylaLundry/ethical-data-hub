@@ -132,25 +132,104 @@
     --ink-paper-warm: 230 25% 12%;
   }
 
-  /* Colorblind Mode - Deuteranopia */
+  /* Colorblind Mode - Deuteranopia (red-green deficiency)
+     Remove all red/green contrasts, use blue + neutral gray */
   .colorblind-deuteranopia {
-    --status-allowed: 210 80% 50%;
-    --status-conditional: 35 85% 50%;
-    --status-restricted: 0 0% 40%;
+    /* Status: blue for allowed, amber for conditional, dark gray for restricted */
+    --status-allowed: 210 85% 45%;
+    --status-allowed-foreground: 0 0% 100%;
+    --status-conditional: 45 90% 50%;
+    --status-conditional-foreground: 0 0% 0%;
+    --status-restricted: 220 10% 35%;
+    --status-restricted-foreground: 0 0% 100%;
+    
+    /* Increase accent contrast */
+    --primary: 220 50% 35%;
+    --ring: 220 50% 35%;
+    --ink-teal: 210 85% 45%;
+    --ink-coral: 220 10% 35%;
   }
 
-  /* Colorblind Mode - Protanopia */
+  .dark.colorblind-deuteranopia,
+  .colorblind-deuteranopia.dark {
+    --status-allowed: 210 80% 55%;
+    --status-allowed-foreground: 0 0% 0%;
+    --status-conditional: 45 85% 60%;
+    --status-conditional-foreground: 0 0% 0%;
+    --status-restricted: 220 10% 50%;
+    --status-restricted-foreground: 0 0% 100%;
+    
+    --primary: 220 50% 65%;
+    --ring: 220 50% 65%;
+    --ink-teal: 210 80% 55%;
+    --ink-coral: 220 10% 50%;
+  }
+
+  /* Colorblind Mode - Protanopia (red deficiency)
+     Avoid red entirely, use amber-gray and blue-gray */
   .colorblind-protanopia {
-    --status-allowed: 210 80% 50%;
-    --status-conditional: 35 85% 50%;
-    --status-restricted: 0 0% 35%;
+    --status-allowed: 200 75% 40%;
+    --status-allowed-foreground: 0 0% 100%;
+    --status-conditional: 40 80% 48%;
+    --status-conditional-foreground: 0 0% 0%;
+    --status-restricted: 210 15% 30%;
+    --status-restricted-foreground: 0 0% 100%;
+    
+    --destructive: 40 70% 45%;
+    --destructive-foreground: 0 0% 0%;
+    --primary: 215 45% 32%;
+    --ring: 215 45% 32%;
+    --ink-coral: 210 15% 30%;
   }
 
-  /* Colorblind Mode - Tritanopia */
+  .dark.colorblind-protanopia,
+  .colorblind-protanopia.dark {
+    --status-allowed: 200 70% 55%;
+    --status-allowed-foreground: 0 0% 0%;
+    --status-conditional: 40 75% 58%;
+    --status-conditional-foreground: 0 0% 0%;
+    --status-restricted: 210 15% 55%;
+    --status-restricted-foreground: 0 0% 100%;
+    
+    --destructive: 40 65% 55%;
+    --destructive-foreground: 0 0% 0%;
+    --primary: 215 45% 60%;
+    --ring: 215 45% 60%;
+    --ink-coral: 210 15% 55%;
+  }
+
+  /* Colorblind Mode - Tritanopia (blue-yellow deficiency)
+     Reduce reliance on blue, shift to neutral slate/charcoal */
   .colorblind-tritanopia {
-    --status-allowed: 180 55% 40%;
-    --status-conditional: 330 65% 55%;
-    --status-restricted: 0 65% 45%;
+    --status-allowed: 160 50% 35%;
+    --status-allowed-foreground: 0 0% 100%;
+    --status-conditional: 350 55% 50%;
+    --status-conditional-foreground: 0 0% 100%;
+    --status-restricted: 0 0% 28%;
+    --status-restricted-foreground: 0 0% 100%;
+    
+    /* Shift primary away from blue */
+    --primary: 250 25% 30%;
+    --ring: 250 25% 30%;
+    --border: 250 15% 75%;
+    --ink-blue: 250 25% 30%;
+    --ink-blue-soft: 250 15% 90%;
+  }
+
+  .dark.colorblind-tritanopia,
+  .colorblind-tritanopia.dark {
+    --status-allowed: 160 45% 50%;
+    --status-allowed-foreground: 0 0% 0%;
+    --status-conditional: 350 50% 60%;
+    --status-conditional-foreground: 0 0% 100%;
+    --status-restricted: 0 0% 55%;
+    --status-restricted-foreground: 0 0% 0%;
+    
+    --primary: 250 30% 65%;
+    --ring: 250 30% 65%;
+    --border: 250 20% 25%;
+    --ink-blue: 250 30% 65%;
+    --ink-blue-soft: 250 20% 22%;
   }
 }
 
