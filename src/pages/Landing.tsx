@@ -65,7 +65,11 @@ export default function Landing() {
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline">
+            <Button 
+              size="lg" 
+              variant="outline"
+              onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+            >
               Learn how it works
             </Button>
           </div>
@@ -157,7 +161,7 @@ export default function Landing() {
       <InkDivider className="max-w-4xl mx-auto" />
 
       {/* How it works - Editorial numbered sections */}
-      <section className="py-20 px-4">
+      <section id="how-it-works" className="py-20 px-4">
         <div className="container max-w-4xl mx-auto">
           <p className="ink-section-title text-center">The Process</p>
           <h2 className="font-serif text-2xl md:text-3xl font-semibold text-center mb-12">
