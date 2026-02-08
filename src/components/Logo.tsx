@@ -31,7 +31,7 @@ export function Logo({
       <img src={logoLight} alt="Inkscape" className={cn(sizeClasses[size], 'w-auto transition-all duration-200',
     // Use dark: variant for automatic theme-aware inversion
     'invert dark:invert-0')} />
-      {showWordmark && <span className={cn("font-serif font-semibold tracking-tight text-2xl", wordmarkSizes[size])}>
+      {showWordmark && <span className={cn("font-serif font-semibold tracking-tight text-2xl mt-1", wordmarkSizes[size])}>
           Inkscape
         </span>}
     </div>;
