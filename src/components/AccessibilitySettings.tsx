@@ -15,10 +15,10 @@ export function AccessibilitySettings() {
   const {
     theme,
     colorblindMode,
-    textSize,
+    textScale,
     setTheme,
     setColorblindMode,
-    setTextSize,
+    setTextScale,
   } = useAccessibility();
 
   const colorblindModes = [
@@ -97,19 +97,29 @@ export function AccessibilitySettings() {
         <div className="space-y-3">
           <label className="text-sm font-medium flex items-center gap-2">
             <Type className="h-4 w-4" />
-            Text Size: {textSize}%
+            Text Size: {Math.round(textScale * 100)}%
           </label>
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted-foreground">A</span>
             <Slider
-              value={[textSize]}
-              onValueChange={([value]) => setTextSize(value as 100 | 110 | 120 | 130 | 140 | 150)}
-              min={100}
-              max={150}
-              step={10}
+              value={[textScale]}
+              onValueChange={([value]) => setTextScale(value)}
+              min={0.8}
+              max={2}
+              step={0.01}
               className="flex-1"
             />
             <span className="text-lg text-muted-foreground">A</span>
+          </div>
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>80%</span>
+            <button 
+              onClick={() => setTextScale(1)} 
+              className="hover:text-foreground transition-colors"
+            >
+              Reset
+            </button>
+            <span>200%</span>
           </div>
         </div>
       </DropdownMenuContent>
