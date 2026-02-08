@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AccessibilitySettings } from '@/components/AccessibilitySettings';
-import { ScalableContent } from '@/components/ScalableContent';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import {
@@ -146,11 +145,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </header>
 
-        {/* Page Content - This scales with text size */}
+        {/* Page Content */}
         <main className="flex-1 p-4 lg:p-8 overflow-auto">
-          <ScalableContent className="max-w-6xl mx-auto animate-fade-in">
+          <div className="max-w-6xl mx-auto animate-fade-in">
             {children}
-          </ScalableContent>
+          </div>
         </main>
       </div>
     </div>

@@ -38,10 +38,11 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     }
   }, [colorblindMode]);
 
-  // Text scale is stored but NOT applied to root - components opt-in via CSS variable
+  // Apply text scale with smooth transition
   useEffect(() => {
     const root = document.documentElement;
-    root.style.setProperty('--text-scale', textScale.toString());
+    root.style.fontSize = `${textScale * 100}%`;
+    root.style.transition = 'font-size 0.15s ease-out';
   }, [textScale]);
 
   const setTheme = (newTheme: Theme) => {

@@ -253,9 +253,9 @@
     letter-spacing: -0.02em;
   }
 
-  /* Text scale CSS variable - default to 1 */
-  :root {
-    --text-scale: 1;
+  /* Smooth text size transitions */
+  html {
+    transition: font-size 0.15s ease-out;
   }
 }
 
