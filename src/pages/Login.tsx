@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AccessibilitySettings } from '@/components/AccessibilitySettings';
+import { Logo } from '@/components/Logo';
+import { InkAccent } from '@/components/InkAccent';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,7 +31,6 @@ export default function Login() {
     setIsLoading(true);
     try {
       await login(email, password);
-      // After login, check if user has a role, otherwise go to onboarding
       navigate('/onboarding');
     } catch (err) {
       setError('Invalid credentials. Please try again.');
@@ -40,31 +41,31 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
+      {/* Header - Editorial masthead */}
       <header className="p-4">
         <div className="container max-w-6xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Shield className="h-5 w-5 text-primary" />
-            </div>
-            <span className="text-lg font-semibold">Inkscape</span>
+          <Link to="/">
+            <Logo size="md" />
           </Link>
           <AccessibilitySettings />
         </div>
       </header>
 
       {/* Login Form */}
-      <main className="flex-1 flex items-center justify-center p-4">
+      <main className="flex-1 flex items-center justify-center p-4 relative">
+        <InkAccent variant="stroke" position="top-right" className="text-foreground" />
+        
         <div className="w-full max-w-md">
-          <div className="ink-card animate-fade-in">
+          <div className="ink-card p-8 animate-fade-in">
             <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold mb-2">Welcome back</h1>
-              <p className="text-muted-foreground">Sign in to your Inkscape account</p>
+              <p className="ink-section-title">Welcome Back</p>
+              <h1 className="font-serif text-2xl font-semibold mb-2">Sign in to Inkscape</h1>
+              <p className="text-muted-foreground text-sm">Continue protecting creative work</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
-                <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+                <div className="p-3 rounded-sm bg-destructive/10 text-destructive text-sm border border-destructive/20">
                   {error}
                 </div>
               )}
@@ -78,6 +79,7 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
+                  className="rounded-sm"
                 />
               </div>
 
@@ -91,12 +93,12 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     autoComplete="current-password"
-                    className="pr-10"
+                    className="pr-10 rounded-sm"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>

@@ -133,7 +133,8 @@ export default function CompanyScan() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-1">Scan Dataset</h1>
+        <p className="ink-section-title">Compliance Check</p>
+        <h1 className="font-serif text-2xl font-semibold mb-1">Scan Dataset</h1>
         <p className="text-muted-foreground">
           Upload files to check for compliance with artist permissions
         </p>
@@ -143,7 +144,7 @@ export default function CompanyScan() {
       {!scanResult ? (
         <div className="max-w-2xl mx-auto space-y-6">
           <div className="ink-card">
-            <h2 className="text-lg font-semibold mb-4">Upload Dataset</h2>
+            <h2 className="font-serif text-lg font-semibold mb-4">Upload Dataset</h2>
             <FileDropzone
               onFilesSelected={setFiles}
               accept="image/*,.zip"
@@ -178,23 +179,23 @@ export default function CompanyScan() {
           {/* Summary Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="ink-card text-center">
-              <p className="text-3xl font-bold text-foreground">{scanResult.total_files}</p>
+              <p className="font-serif text-3xl font-semibold text-foreground">{scanResult.total_files}</p>
               <p className="text-sm text-muted-foreground">Total Files</p>
             </div>
             <div className="ink-card text-center">
-              <p className="text-3xl font-bold text-status-allowed">{scanResult.safe_to_use}</p>
+              <p className="font-serif text-3xl font-semibold text-status-allowed">{scanResult.safe_to_use}</p>
               <p className="text-sm text-muted-foreground flex items-center justify-center gap-1">
                 <FileCheck className="h-4 w-4" /> Safe to Use
               </p>
             </div>
             <div className="ink-card text-center">
-              <p className="text-3xl font-bold text-status-conditional">{scanResult.conditional}</p>
+              <p className="font-serif text-3xl font-semibold text-status-conditional">{scanResult.conditional}</p>
               <p className="text-sm text-muted-foreground flex items-center justify-center gap-1">
                 <AlertTriangle className="h-4 w-4" /> Conditional
               </p>
             </div>
             <div className="ink-card text-center">
-              <p className="text-3xl font-bold text-status-restricted">{scanResult.restricted}</p>
+              <p className="font-serif text-3xl font-semibold text-status-restricted">{scanResult.restricted}</p>
               <p className="text-sm text-muted-foreground flex items-center justify-center gap-1">
                 <XCircle className="h-4 w-4" /> Restricted
               </p>
@@ -204,7 +205,7 @@ export default function CompanyScan() {
           {/* Results Table */}
           <div className="ink-card overflow-hidden p-0">
             <div className="p-4 border-b border-border flex items-center justify-between">
-              <h2 className="font-semibold">Scan Results</h2>
+              <h2 className="font-serif font-semibold">Scan Results</h2>
               <Button variant="outline" size="sm" onClick={resetScan}>
                 New Scan
               </Button>
@@ -213,16 +214,16 @@ export default function CompanyScan() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border bg-accent/30">
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Filename
                     </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Artist
                     </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">
+                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Action
                     </th>
                   </tr>
@@ -276,13 +277,13 @@ export default function CompanyScan() {
       <Dialog open={showAgreementModal} onOpenChange={setShowAgreementModal}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle>Data Use Agreement</DialogTitle>
+            <DialogTitle className="font-serif">Data Use Agreement</DialogTitle>
             <DialogDescription>
               Review and accept the agreement to use {selectedItem?.file_name}
             </DialogDescription>
           </DialogHeader>
           
-          <div className="flex-1 overflow-y-auto p-4 bg-accent/30 rounded-lg font-mono text-sm whitespace-pre-wrap">
+          <div className="flex-1 overflow-y-auto p-4 bg-accent/30 rounded-sm font-mono text-sm whitespace-pre-wrap">
             {isGeneratingAgreement ? (
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

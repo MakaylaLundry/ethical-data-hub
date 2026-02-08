@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Palette, Building2, ArrowRight, Shield } from 'lucide-react';
+import { Palette, Building2, ArrowRight } from 'lucide-react';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
+import { Logo } from '@/components/Logo';
+import { InkAccent } from '@/components/InkAccent';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -48,47 +50,47 @@ export default function Onboarding() {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative">
+      <InkAccent variant="stroke" position="top-right" className="text-foreground" />
+      
       <div className="w-full max-w-2xl">
-        {/* Logo */}
-        <div className="flex items-center justify-center gap-3 mb-12">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Shield className="h-6 w-6 text-primary" />
-          </div>
-          <span className="text-xl font-semibold">Inkscape</span>
+        {/* Logo - Editorial masthead style */}
+        <div className="flex items-center justify-center mb-12">
+          <Logo size="lg" />
         </div>
 
         {/* Title */}
         <div className="text-center mb-10 animate-fade-in">
-          <h1 className="text-3xl font-bold mb-3">How will you use Inkscape?</h1>
+          <p className="ink-section-title">Getting Started</p>
+          <h1 className="font-serif text-3xl font-semibold mb-3">How will you use Inkscape?</h1>
           <p className="text-muted-foreground">
             Choose your role to get a personalized experience.
           </p>
         </div>
 
         {/* Role Cards */}
-        <div className="grid md:grid-cols-2 gap-4 mb-8">
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
           {roles.map((role) => (
             <button
               key={role.id}
               onClick={() => setSelectedRole(role.id)}
               className={cn(
-                'ink-card text-left transition-all duration-200 cursor-pointer',
+                'ink-card text-left transition-all duration-200 cursor-pointer p-6',
                 'hover:border-primary/50',
                 selectedRole === role.id
                   ? 'border-primary ring-2 ring-primary/20'
-                  : 'hover:shadow-md'
+                  : 'hover:border-muted-foreground/30'
               )}
             >
               <div className="flex items-start gap-4 mb-4">
                 <div className={cn(
-                  'p-3 rounded-xl',
+                  'p-3 rounded-sm',
                   role.id === 'artist' ? 'bg-ink-teal/10 text-ink-teal' : 'bg-primary/10 text-primary'
                 )}>
                   <role.icon className="h-6 w-6" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-1">{role.title}</h3>
+                  <h3 className="font-serif text-lg font-semibold mb-1">{role.title}</h3>
                   <p className="text-sm text-muted-foreground">{role.description}</p>
                 </div>
               </div>
@@ -97,7 +99,7 @@ export default function Onboarding() {
                 {role.features.map((feature) => (
                   <span
                     key={feature}
-                    className="px-2.5 py-1 text-xs font-medium rounded-full bg-accent text-muted-foreground"
+                    className="px-2.5 py-1 text-xs font-medium rounded-sm bg-accent text-muted-foreground"
                   >
                     {feature}
                   </span>
@@ -106,7 +108,7 @@ export default function Onboarding() {
 
               {/* Selection indicator */}
               <div className={cn(
-                'absolute top-4 right-4 w-5 h-5 rounded-full border-2 transition-colors',
+                'absolute top-4 right-4 w-5 h-5 rounded-sm border-2 transition-colors',
                 selectedRole === role.id
                   ? 'border-primary bg-primary'
                   : 'border-border'

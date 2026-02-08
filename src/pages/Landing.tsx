@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, ArrowRight, User, Building2, Palette, CheckCircle } from 'lucide-react';
+import { ArrowRight, Building2, Palette, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AccessibilitySettings } from '@/components/AccessibilitySettings';
+import { Logo } from '@/components/Logo';
+import { InkAccent, InkDivider } from '@/components/InkAccent';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 
 export default function Landing() {
   const { isAuthenticated, role } = useAuth();
@@ -18,14 +19,11 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
+      {/* Header - Editorial masthead style */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="container max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Shield className="h-5 w-5 text-primary" />
-            </div>
-            <span className="text-lg font-semibold">Inkscape</span>
+          <Link to="/" className="flex items-center">
+            <Logo size="md" />
           </Link>
           
           <div className="flex items-center gap-3">
@@ -40,21 +38,22 @@ export default function Landing() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4">
-        <div className="container max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8">
-            <Shield className="h-4 w-4" />
+      {/* Hero Section - Editorial layout with strong vertical rhythm */}
+      <section className="pt-32 pb-24 px-4 relative overflow-hidden">
+        <InkAccent variant="curve" position="top-right" className="text-foreground" />
+        
+        <div className="container max-w-4xl mx-auto text-center relative">
+          <p className="ink-section-title mb-6">
             Ethical AI Data Sourcing
-          </div>
+          </p>
           
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-6 leading-tight">
             Protect your creative work.
             <br />
             <span className="text-muted-foreground">Build AI responsibly.</span>
           </h1>
           
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
             Inkscape bridges artists and AI companies with transparent permission controls,
             ensuring fair use and proper attribution for creative works in AI training datasets.
           </p>
@@ -73,22 +72,27 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section className="py-20 px-4 bg-accent/30">
+      <InkDivider className="max-w-4xl mx-auto" />
+
+      {/* Features Grid - Editorial blocks */}
+      <section className="py-20 px-4 relative">
+        <InkAccent variant="dots" position="bottom-left" className="text-foreground" />
+        
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            Two sides. One platform.
+          <p className="ink-section-title text-center">Two Perspectives</p>
+          <h2 className="font-serif text-2xl md:text-3xl font-semibold text-center mb-12">
+            One platform. Both sides of the story.
           </h2>
           
           <div className="grid md:grid-cols-2 gap-8">
             {/* Artist Card */}
-            <div className="ink-card-hover group">
+            <div className="ink-card-hover group p-8">
               <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 rounded-xl bg-ink-teal/10 text-ink-teal">
+                <div className="p-3 rounded-sm bg-ink-teal/10 text-ink-teal">
                   <Palette className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">For Artists</h3>
+                  <h3 className="font-serif text-xl font-semibold">For Artists</h3>
                   <p className="text-sm text-muted-foreground">Protect & control your work</p>
                 </div>
               </div>
@@ -115,13 +119,13 @@ export default function Landing() {
             </div>
 
             {/* Company Card */}
-            <div className="ink-card-hover group">
+            <div className="ink-card-hover group p-8">
               <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 rounded-xl bg-primary/10 text-primary">
+                <div className="p-3 rounded-sm bg-primary/10 text-primary">
                   <Building2 className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">For Companies</h3>
+                  <h3 className="font-serif text-xl font-semibold">For Companies</h3>
                   <p className="text-sm text-muted-foreground">Source data ethically</p>
                 </div>
               </div>
@@ -150,10 +154,13 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* How it works */}
+      <InkDivider className="max-w-4xl mx-auto" />
+
+      {/* How it works - Editorial numbered sections */}
       <section className="py-20 px-4">
         <div className="container max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
+          <p className="ink-section-title text-center">The Process</p>
+          <h2 className="font-serif text-2xl md:text-3xl font-semibold text-center mb-12">
             How it works
           </h2>
           
@@ -176,23 +183,23 @@ export default function Landing() {
               },
             ].map((item) => (
               <div key={item.step} className="text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary font-bold mb-4">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-sm bg-primary/10 text-primary font-serif font-bold text-lg mb-4">
                   {item.step}
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.description}</p>
+                <h3 className="font-serif text-lg font-semibold mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer - Editorial style */}
       <footer className="py-8 px-4 border-t border-border">
         <div className="container max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Shield className="h-4 w-4" />
-            <span>Inkscape — Ethical AI Data Sourcing</span>
+            <Logo size="sm" />
+            <span className="ml-2">— Ethical AI Data Sourcing</span>
           </div>
           <p className="text-sm text-muted-foreground">
             © 2024 Inkscape. All rights reserved.

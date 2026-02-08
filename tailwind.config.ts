@@ -15,6 +15,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['Newsreader', 'Georgia', 'serif'],
+        editorial: ['Newsreader', 'Georgia', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -60,7 +62,7 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Inkscape custom colors
+        // Inkscape Editorial colors
         ink: {
           navy: "hsl(var(--ink-navy))",
           blue: "hsl(var(--ink-blue))",
@@ -68,6 +70,8 @@ export default {
           teal: "hsl(var(--ink-teal))",
           amber: "hsl(var(--ink-amber))",
           coral: "hsl(var(--ink-coral))",
+          paper: "hsl(var(--ink-paper))",
+          "paper-warm": "hsl(var(--ink-paper-warm))",
         },
         status: {
           allowed: "hsl(var(--status-allowed))",
@@ -108,6 +112,10 @@ export default {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.7" },
         },
+        "ink-draw": {
+          from: { strokeDashoffset: "100" },
+          to: { strokeDashoffset: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -116,6 +124,7 @@ export default {
         "slide-in-left": "slide-in-left 0.3s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
         "pulse-soft": "pulse-soft 2s ease-in-out infinite",
+        "ink-draw": "ink-draw 1s ease-out forwards",
       },
     },
   },

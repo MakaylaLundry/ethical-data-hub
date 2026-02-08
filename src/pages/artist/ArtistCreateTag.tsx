@@ -93,10 +93,10 @@ export default function ArtistCreateTag() {
     return (
       <DashboardLayout>
         <div className="flex flex-col items-center justify-center py-20 animate-scale-in">
-          <div className="p-4 rounded-full bg-status-allowed/10 mb-6">
+          <div className="p-4 rounded-sm bg-status-allowed/10 mb-6">
             <CheckCircle className="h-12 w-12 text-status-allowed" />
           </div>
-          <h2 className="text-2xl font-bold mb-2">Tag Created Successfully!</h2>
+          <h2 className="font-serif text-2xl font-semibold mb-2">Tag Created Successfully!</h2>
           <p className="text-muted-foreground mb-4">Redirecting to your artworks...</p>
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
@@ -108,7 +108,8 @@ export default function ArtistCreateTag() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-1">Create Security Tag</h1>
+        <p className="ink-section-title">New Tag</p>
+        <h1 className="font-serif text-2xl font-semibold mb-1">Create Security Tag</h1>
         <p className="text-muted-foreground">
           Upload your artwork and set permissions for AI training use
         </p>
@@ -118,7 +119,7 @@ export default function ArtistCreateTag() {
         {/* Left: Upload */}
         <div className="space-y-6">
           <div className="ink-card">
-            <h2 className="text-lg font-semibold mb-4">Upload Artwork</h2>
+            <h2 className="font-serif text-lg font-semibold mb-4">Upload Artwork</h2>
             <FileDropzone
               onFilesSelected={setFiles}
               accept="image/*"
@@ -131,7 +132,7 @@ export default function ArtistCreateTag() {
         <div className="space-y-6">
           {/* Training Permission */}
           <div className="ink-card">
-            <h2 className="text-lg font-semibold mb-4">AI Training Permission</h2>
+            <h2 className="font-serif text-lg font-semibold mb-4">AI Training Permission</h2>
             
             <div className="grid grid-cols-3 gap-2 mb-6">
               {[
@@ -143,7 +144,7 @@ export default function ArtistCreateTag() {
                   key={option.value}
                   onClick={() => setTrainingPermission(option.value as TrainingPermission)}
                   className={cn(
-                    'py-3 px-4 rounded-lg border-2 font-medium transition-all text-sm',
+                    'py-3 px-4 rounded-sm border-2 font-medium transition-all text-sm',
                     trainingPermission === option.value
                       ? `border-${option.color} bg-${option.color}/10`
                       : 'border-border hover:border-muted-foreground/30'
@@ -156,7 +157,7 @@ export default function ArtistCreateTag() {
 
             {/* Conditional Use Cases */}
             {trainingPermission === 'conditional' && (
-              <div className="space-y-3 p-4 rounded-lg bg-accent/50 animate-fade-in">
+              <div className="space-y-3 p-4 rounded-sm bg-accent/50 animate-fade-in">
                 <Label className="text-sm font-medium">Allowed Use Cases</Label>
                 <div className="grid grid-cols-2 gap-3">
                   {useCases.map((useCase) => (
@@ -197,7 +198,7 @@ export default function ArtistCreateTag() {
 
           {/* Notes */}
           <div className="ink-card">
-            <Label htmlFor="notes" className="text-lg font-semibold">
+            <Label htmlFor="notes" className="font-serif text-lg font-semibold">
               Notes (Optional)
             </Label>
             <p className="text-sm text-muted-foreground mb-3">
@@ -209,6 +210,7 @@ export default function ArtistCreateTag() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
+              className="rounded-sm"
             />
           </div>
 

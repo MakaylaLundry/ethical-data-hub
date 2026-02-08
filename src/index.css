@@ -1,152 +1,156 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* Inkscape Design System
-   Theme: Calm, human, thoughtful, minimal
-   Primary: Deep navy blues
-   Accents: Soft blues and warm whites
-   No AI aesthetics - clean and trustworthy
+   Theme: Editorial Ink — Newspaper, publishing, authorship
+   Primary: Deep ink-navy blues (slightly purple-leaning)
+   Accents: Soft muted blues and warm paper whites
+   NO AI aesthetics — human, editorial, trustworthy
 */
 
 @layer base {
   :root {
-    /* Light Mode - Soft, warm, professional */
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    /* Light Mode - Paper & Ink */
+    --background: 45 15% 97%;
+    --foreground: 230 25% 12%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 45 20% 99%;
+    --card-foreground: 230 25% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 45 20% 99%;
+    --popover-foreground: 230 25% 12%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 230 45% 28%;
+    --primary-foreground: 45 20% 98%;
 
-    --secondary: 214 32% 91%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 230 15% 90%;
+    --secondary-foreground: 230 25% 12%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 45 10% 93%;
+    --muted-foreground: 230 15% 45%;
 
-    --accent: 214 32% 91%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 230 15% 92%;
+    --accent-foreground: 230 25% 12%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 65% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 217 91% 60%;
+    --border: 230 15% 88%;
+    --input: 230 15% 88%;
+    --ring: 230 45% 28%;
 
-    --radius: 0.75rem;
+    --radius: 0.25rem;
 
     /* Status Colors - Colorblind-safe palette */
-    --status-allowed: 166 72% 40%;
+    --status-allowed: 145 55% 35%;
     --status-allowed-foreground: 0 0% 100%;
-    --status-conditional: 38 92% 50%;
+    --status-conditional: 35 85% 45%;
     --status-conditional-foreground: 0 0% 0%;
-    --status-restricted: 0 72% 51%;
+    --status-restricted: 0 65% 45%;
     --status-restricted-foreground: 0 0% 100%;
 
     /* Sidebar */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 214 32% 95%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-background: 45 20% 99%;
+    --sidebar-foreground: 230 25% 12%;
+    --sidebar-primary: 230 45% 28%;
+    --sidebar-primary-foreground: 45 20% 98%;
+    --sidebar-accent: 230 15% 94%;
+    --sidebar-accent-foreground: 230 25% 12%;
+    --sidebar-border: 230 15% 88%;
+    --sidebar-ring: 230 45% 28%;
 
-    /* Custom Inkscape tokens */
-    --ink-navy: 222 47% 11%;
-    --ink-blue: 217 91% 60%;
-    --ink-blue-soft: 214 95% 93%;
-    --ink-teal: 166 72% 40%;
-    --ink-amber: 38 92% 50%;
-    --ink-coral: 0 72% 51%;
+    /* Custom Inkscape Editorial tokens */
+    --ink-navy: 230 25% 12%;
+    --ink-blue: 230 45% 28%;
+    --ink-blue-soft: 230 25% 92%;
+    --ink-teal: 145 55% 35%;
+    --ink-amber: 35 85% 45%;
+    --ink-coral: 0 65% 45%;
+    --ink-paper: 45 15% 97%;
+    --ink-paper-warm: 40 25% 95%;
   }
 
   .dark {
-    /* Dark Mode - Deep, calming navy */
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
+    /* Dark Mode - Deep editorial navy */
+    --background: 230 30% 8%;
+    --foreground: 45 15% 95%;
 
-    --card: 222 47% 9%;
-    --card-foreground: 210 40% 98%;
+    --card: 230 28% 11%;
+    --card-foreground: 45 15% 95%;
 
-    --popover: 222 47% 9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 230 28% 11%;
+    --popover-foreground: 45 15% 95%;
 
-    --primary: 217 91% 65%;
-    --primary-foreground: 222 47% 6%;
+    --primary: 230 40% 65%;
+    --primary-foreground: 230 30% 8%;
 
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 230 25% 18%;
+    --secondary-foreground: 45 15% 95%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 230 25% 18%;
+    --muted-foreground: 230 15% 55%;
 
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 230 25% 18%;
+    --accent-foreground: 45 15% 95%;
 
-    --destructive: 0 62% 55%;
+    --destructive: 0 55% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 217 91% 65%;
+    --border: 230 25% 18%;
+    --input: 230 25% 18%;
+    --ring: 230 40% 65%;
 
     /* Status Colors - Colorblind-safe (adjusted for dark) */
-    --status-allowed: 166 72% 50%;
+    --status-allowed: 145 55% 45%;
     --status-allowed-foreground: 0 0% 0%;
-    --status-conditional: 38 92% 55%;
+    --status-conditional: 35 85% 55%;
     --status-conditional-foreground: 0 0% 0%;
-    --status-restricted: 0 72% 60%;
+    --status-restricted: 0 55% 55%;
     --status-restricted-foreground: 0 0% 100%;
 
     /* Sidebar */
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217 91% 65%;
-    --sidebar-primary-foreground: 222 47% 6%;
-    --sidebar-accent: 217 33% 15%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 217 91% 65%;
+    --sidebar-background: 230 28% 10%;
+    --sidebar-foreground: 45 15% 95%;
+    --sidebar-primary: 230 40% 65%;
+    --sidebar-primary-foreground: 230 30% 8%;
+    --sidebar-accent: 230 25% 16%;
+    --sidebar-accent-foreground: 45 15% 95%;
+    --sidebar-border: 230 25% 18%;
+    --sidebar-ring: 230 40% 65%;
 
-    /* Custom Inkscape tokens */
-    --ink-navy: 222 47% 6%;
-    --ink-blue: 217 91% 65%;
-    --ink-blue-soft: 217 50% 20%;
-    --ink-teal: 166 72% 50%;
-    --ink-amber: 38 92% 55%;
-    --ink-coral: 0 72% 60%;
+    /* Custom Inkscape Editorial tokens */
+    --ink-navy: 230 30% 8%;
+    --ink-blue: 230 40% 65%;
+    --ink-blue-soft: 230 30% 20%;
+    --ink-teal: 145 55% 45%;
+    --ink-amber: 35 85% 55%;
+    --ink-coral: 0 55% 55%;
+    --ink-paper: 230 30% 8%;
+    --ink-paper-warm: 230 25% 12%;
   }
 
   /* Colorblind Mode - Deuteranopia */
   .colorblind-deuteranopia {
-    --status-allowed: 207 90% 54%;
-    --status-conditional: 38 92% 50%;
-    --status-restricted: 0 0% 45%;
+    --status-allowed: 210 80% 50%;
+    --status-conditional: 35 85% 50%;
+    --status-restricted: 0 0% 40%;
   }
 
   /* Colorblind Mode - Protanopia */
   .colorblind-protanopia {
-    --status-allowed: 207 90% 54%;
-    --status-conditional: 38 92% 50%;
-    --status-restricted: 0 0% 40%;
+    --status-allowed: 210 80% 50%;
+    --status-conditional: 35 85% 50%;
+    --status-restricted: 0 0% 35%;
   }
 
   /* Colorblind Mode - Tritanopia */
   .colorblind-tritanopia {
-    --status-allowed: 180 60% 45%;
-    --status-conditional: 330 70% 60%;
-    --status-restricted: 0 72% 51%;
+    --status-allowed: 180 55% 40%;
+    --status-conditional: 330 65% 55%;
+    --status-restricted: 0 65% 45%;
   }
 }
 
@@ -163,6 +167,13 @@
     @apply bg-background text-foreground antialiased;
   }
 
+  /* Editorial Typography */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
   /* Text size accessibility */
   html.text-size-110 { font-size: 110%; }
   html.text-size-120 { font-size: 120%; }
@@ -172,19 +183,113 @@
 }
 
 @layer components {
+  /* Editorial Card - Block style, not floating widget */
   .ink-card {
-    @apply bg-card border border-border rounded-xl p-6 shadow-sm;
+    @apply bg-card border border-border p-6;
+    border-radius: var(--radius);
+    position: relative;
   }
 
   .ink-card-hover {
-    @apply ink-card transition-all duration-200 hover:shadow-md hover:border-primary/20;
+    @apply ink-card transition-all duration-200;
+    position: relative;
   }
 
+  .ink-card-hover:hover {
+    @apply border-primary/30;
+  }
+
+  /* Editorial gradient text */
   .ink-gradient-text {
     @apply bg-gradient-to-r from-primary to-ink-teal bg-clip-text text-transparent;
   }
 
   .ink-focus-ring {
     @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background;
+  }
+
+  /* Editorial Section Divider - Ink line style */
+  .ink-divider {
+    @apply relative my-8;
+  }
+
+  .ink-divider::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--border)) 15%,
+      hsl(var(--border)) 85%,
+      transparent 100%
+    );
+  }
+
+  /* Editorial Masthead styling */
+  .ink-masthead {
+    @apply flex items-center gap-4;
+  }
+
+  /* Subtle ink stroke accent - decorative */
+  .ink-stroke-accent {
+    position: relative;
+  }
+
+  .ink-stroke-accent::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 2.5rem;
+    height: 2px;
+    background: hsl(var(--primary));
+    opacity: 0.6;
+  }
+
+  /* Section headline styling */
+  .ink-section-title {
+    @apply text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.15em;
+  }
+
+  /* Subtle background texture for sections */
+  .ink-paper-texture {
+    background-image: 
+      radial-gradient(ellipse at 20% 30%, hsl(var(--ink-blue-soft) / 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 70%, hsl(var(--ink-blue-soft) / 0.1) 0%, transparent 50%);
+  }
+}
+
+/* Subtle ink scribble decorative element */
+@layer utilities {
+  .ink-scribble {
+    position: relative;
+  }
+
+  .ink-scribble::before {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg width='200' height='100' viewBox='0 0 200 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 50 Q 30 20, 60 50 T 120 50 T 195 50' stroke='%23334155' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 200px;
+    height: 100px;
+  }
+
+  .ink-scribble-top::before {
+    top: -20px;
+    right: 10%;
+  }
+
+  .ink-scribble-bottom::before {
+    bottom: -20px;
+    left: 10%;
+    transform: rotate(180deg);
   }
 }
