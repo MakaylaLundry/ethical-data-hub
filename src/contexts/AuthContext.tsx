@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { apiClient } from '@/services/apiClient';
 
@@ -27,10 +27,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Store role in memory (could be persisted to backend later)
-let storedRole: UserRole = null;
-
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [role, setRoleState] = useState<UserRole>(null);
+  
   const {
     user: auth0User,
     isAuthenticated: auth0IsAuthenticated,
@@ -65,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: auth0User.sub || '',
         email: auth0User.email || '',
         name: auth0User.name || auth0User.email?.split('@')[0] || '',
-        role: storedRole,
+        role: role,
       }
     : null;
 
@@ -86,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     apiClient.setAccessToken(null);
-    storedRole = null;
+    setRoleState(null);
     auth0Logout({
       logoutParams: {
         returnTo: window.location.origin,
@@ -95,14 +94,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const setRole = (role: UserRole) => {
-    storedRole = role;
-    // Force re-render by triggering state change
-    // The role is stored in module scope and reflected in the user object
+    setRoleState(role);
   };
 
   const updateProfile = (data: Partial<User>) => {
     if (data.role !== undefined) {
-      storedRole = data.role;
+      setRoleState(data.role);
     }
     // Other profile updates could be sent to backend here
   };
@@ -113,7 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isAuthenticated: auth0IsAuthenticated,
         isLoading: auth0IsLoading,
-        role: storedRole,
+        role,
         login,
         signup,
         logout,
