@@ -244,24 +244,6 @@ export default function ArtistCreateTag() {
             </div>
           </div>
 
-          {/* Notes */}
-          <div className="ink-card">
-            <Label htmlFor="notes" className="font-serif text-lg font-semibold">
-              Notes (Optional)
-            </Label>
-            <p className="text-sm text-muted-foreground mb-3">
-              Additional instructions or context for companies
-            </p>
-            <Textarea
-              id="notes"
-              placeholder="e.g., Please contact me for commercial licensing..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-              className="rounded-sm"
-            />
-          </div>
-
           {/* Submit */}
           <Button
             size="lg"
