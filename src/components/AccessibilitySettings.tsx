@@ -36,7 +36,7 @@ export function AccessibilitySettings() {
           <span className="sr-only">Accessibility settings</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-72 p-4" style={{ fontSize: '1rem' }} onPointerDownOutside={(e) => e.preventDefault()}>
+      <DropdownMenuContent align="end" className="w-72 p-4">
         <DropdownMenuLabel className="flex items-center gap-2 text-base font-semibold">
           <Eye className="h-4 w-4" />
           Accessibility

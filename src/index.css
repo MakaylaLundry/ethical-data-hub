@@ -240,22 +240,10 @@
 
   html {
     font-family: 'Inter', system-ui, sans-serif;
-    --text-scale: 1;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
-  }
-
-  /* Apply text scaling only to main content, not UI controls */
-  main, article, section, .scalable-text {
-    font-size: calc(1rem * var(--text-scale, 1));
-    transition: font-size 0.15s ease-out;
-  }
-
-  /* Prevent scaling on UI controls */
-  [role="menu"], [role="dialog"], .no-scale {
-    font-size: 1rem !important;
   }
 
   /* Editorial Typography */
@@ -265,6 +253,10 @@
     letter-spacing: -0.02em;
   }
 
+  /* Smooth text size transitions */
+  html {
+    transition: font-size 0.15s ease-out;
+  }
 }
 
 @layer components {

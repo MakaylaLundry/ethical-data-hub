@@ -38,10 +38,11 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     }
   }, [colorblindMode]);
 
-  // Apply text scale with smooth transition - only affects main content
+  // Apply text scale with smooth transition
   useEffect(() => {
     const root = document.documentElement;
-    root.style.setProperty('--text-scale', textScale.toString());
+    root.style.fontSize = `${textScale * 100}%`;
+    root.style.transition = 'font-size 0.15s ease-out';
   }, [textScale]);
 
   const setTheme = (newTheme: Theme) => {
