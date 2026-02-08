@@ -29,7 +29,7 @@ export function Logo({ className, showWordmark = true, size = 'md' }: LogoProps)
   const shouldInvert = !isDarkMode;
 
   return (
-    <div className={cn('ink-masthead', className)}>
+    <div className={cn('ink-masthead flex items-center gap-1', className)}>
       <img 
         src={logoLight} 
         alt="Inkscape" 
