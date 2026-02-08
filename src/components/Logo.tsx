@@ -20,9 +20,9 @@ export function Logo({ className, showWordmark = true, size = 'md' }: LogoProps)
   };
 
   const wordmarkSizes = {
-    sm: 'text-base',
-    md: 'text-lg',
-    lg: 'text-xl',
+    sm: 'text-lg',
+    md: 'text-xl',
+    lg: 'text-2xl',
   };
 
   // The logo is white on black - in light mode we invert it, in dark mode we use it as-is
