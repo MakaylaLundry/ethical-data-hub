@@ -6,6 +6,7 @@ export interface Permission {
   allowed_use_cases: string[];
   attribution: boolean;
   notes?: string;
+  other_use_case?: string;
 }
 
 export interface ArtworkTag {
