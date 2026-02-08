@@ -80,7 +80,7 @@ export function ListenForHelp({ title, explanation, className }: ListenForHelpPr
           },
           body: JSON.stringify({ 
             text: explanation,
-            voiceId: 'Cz0K1kOv9tD8l0b5Qu53'
+            voiceId: 'EXAVITQu4vr4xnSDxMaL'
           }),
         }
       );
