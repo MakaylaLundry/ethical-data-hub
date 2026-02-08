@@ -144,24 +144,39 @@ export default function ArtistCreateTag() {
             <h2 className="font-serif text-lg font-semibold mb-4">AI Training Permission</h2>
             
             <div className="grid grid-cols-3 gap-2 mb-6">
-              {[
-                { value: 'yes', label: 'Allow', color: 'status-allowed' },
-                { value: 'conditional', label: 'Conditional', color: 'status-conditional' },
-                { value: 'no', label: 'Deny', color: 'status-restricted' },
-              ].map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => setTrainingPermission(option.value as TrainingPermission)}
-                  className={cn(
-                    'py-3 px-4 rounded-sm border-2 font-medium transition-all text-sm',
-                    trainingPermission === option.value
-                      ? `border-${option.color} bg-${option.color}/10`
-                      : 'border-border hover:border-muted-foreground/30'
-                  )}
-                >
-                  {option.label}
-                </button>
-              ))}
+              <button
+                onClick={() => setTrainingPermission('yes')}
+                className={cn(
+                  'py-3 px-4 rounded-sm border-2 font-medium transition-all text-sm',
+                  trainingPermission === 'yes'
+                    ? 'border-status-allowed bg-status-allowed/10 text-status-allowed'
+                    : 'border-border hover:border-muted-foreground/30'
+                )}
+              >
+                Allow
+              </button>
+              <button
+                onClick={() => setTrainingPermission('conditional')}
+                className={cn(
+                  'py-3 px-4 rounded-sm border-2 font-medium transition-all text-sm',
+                  trainingPermission === 'conditional'
+                    ? 'border-status-conditional bg-status-conditional/10 text-status-conditional'
+                    : 'border-border hover:border-muted-foreground/30'
+                )}
+              >
+                Conditional
+              </button>
+              <button
+                onClick={() => setTrainingPermission('no')}
+                className={cn(
+                  'py-3 px-4 rounded-sm border-2 font-medium transition-all text-sm',
+                  trainingPermission === 'no'
+                    ? 'border-status-restricted bg-status-restricted/10 text-status-restricted'
+                    : 'border-border hover:border-muted-foreground/30'
+                )}
+              >
+                Deny
+              </button>
             </div>
 
             {/* Conditional Use Cases */}
