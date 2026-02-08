@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { ListenForHelp } from '@/components/ListenForHelp';
 
 export default function CompanyScan() {
   const { toast } = useToast();
@@ -134,7 +135,13 @@ export default function CompanyScan() {
       {/* Header */}
       <div className="mb-8">
         <p className="ink-section-title">Compliance Check</p>
-        <h1 className="font-serif text-2xl font-semibold mb-1">Scan Dataset</h1>
+        <div className="flex items-center gap-3 mb-1">
+          <h1 className="font-serif text-2xl font-semibold">Scan Dataset</h1>
+          <ListenForHelp
+            title="How Scanning Works"
+            explanation="This tool checks your dataset files against our database of artist permissions. Upload your images or a zip file, and we'll identify which files are safe to use, which require agreements, and which are restricted. Green means you can use it freely, yellow means you need to accept terms, and red means the artist has denied permission for AI training."
+          />
+        </div>
         <p className="text-muted-foreground">
           Upload files to check for compliance with artist permissions
         </p>
