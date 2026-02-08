@@ -35,6 +35,13 @@ export function ListenForHelp({ title, explanation, className }: ListenForHelpPr
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
+  // Load voices on mount (some browsers need this)
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+    }
+  }, []);
+
   // Cleanup audio on unmount or dialog close
   useEffect(() => {
     return () => {
@@ -46,6 +53,11 @@ export function ListenForHelp({ title, explanation, className }: ListenForHelpPr
   }, []);
 
   const stopAudio = () => {
+    // Stop Web Speech API
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    // Also stop any HTML audio element if present
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -59,74 +71,63 @@ export function ListenForHelp({ title, explanation, className }: ListenForHelpPr
     setError(null);
   };
 
+  // Use browser's built-in Web Speech API for reliable TTS
   const playAudio = async () => {
     if (isPlaying) {
       stopAudio();
       return;
     }
 
-    setIsLoading(true);
     setError(null);
 
+    // Check if Web Speech API is available
+    if (!('speechSynthesis' in window)) {
+      setError('Text-to-speech is not supported in this browser.');
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
-          body: JSON.stringify({ 
-            text: explanation,
-            voiceId: 'EXAVITQu4vr4xnSDxMaL'
-          }),
-        }
-      );
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
 
-      // Check if response is JSON (fallback/error) or audio
-      const contentType = response.headers.get('Content-Type');
+      const utterance = new SpeechSynthesisUtterance(explanation);
+      utterance.rate = 0.9; // Slightly slower for clarity
+      utterance.pitch = 1;
       
-      if (contentType?.includes('application/json')) {
-        const data = await response.json();
-        if (data.fallback || data.error) {
-          setError('Audio unavailable. Please read the text above.');
-          return;
-        }
+      // Try to find a good English voice
+      const voices = window.speechSynthesis.getVoices();
+      const englishVoice = voices.find(
+        (voice) => voice.lang.startsWith('en') && voice.name.includes('Female')
+      ) || voices.find(
+        (voice) => voice.lang.startsWith('en')
+      );
+      
+      if (englishVoice) {
+        utterance.voice = englishVoice;
       }
 
-      if (!response.ok) {
-        throw new Error('Failed to generate audio');
-      }
+      utterance.onstart = () => {
+        setIsPlaying(true);
+        setIsLoading(false);
+      };
 
-      // Clean up previous audio URL
-      if (audioUrlRef.current) {
-        URL.revokeObjectURL(audioUrlRef.current);
-      }
-
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
-      audioUrlRef.current = audioUrl;
-
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
-
-      audio.onended = () => {
+      utterance.onend = () => {
         setIsPlaying(false);
       };
 
-      audio.onerror = () => {
-        setError('Failed to play audio');
+      utterance.onerror = (event) => {
+        console.error('Speech synthesis error:', event);
+        setError('Failed to play audio. Please try again.');
         setIsPlaying(false);
+        setIsLoading(false);
       };
 
-      await audio.play();
-      setIsPlaying(true);
+      window.speechSynthesis.speak(utterance);
     } catch (err) {
       console.error('TTS error:', err);
       setError('Audio unavailable. Please read the text above.');
-    } finally {
       setIsLoading(false);
     }
   };
