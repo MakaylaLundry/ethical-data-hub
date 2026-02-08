@@ -4,7 +4,8 @@ import { Plus, Image as ImageIcon, Tag, Trash2, Edit, Loader2, AlertCircle } fro
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
-import { apiClient, ApiError, ArtistTag } from '@/services/apiClient';
+import { apiClient, ApiError } from '@/lib/apiClient';
+import type { ArtistTag } from '@/lib/apiTypes';
 import {
   AlertDialog,
   AlertDialogAction,
