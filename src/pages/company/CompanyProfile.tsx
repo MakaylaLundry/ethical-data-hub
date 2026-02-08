@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { apiClient, ApiError, CompanyProfile as CompanyProfileType } from '@/services/apiClient';
+import { apiClient, ApiError } from '@/lib/apiClient';
+import type { CompanyProfile as CompanyProfileType } from '@/lib/apiTypes';
 
 const useCaseOptions = [
   { value: 'general_llm', label: 'General LLM Training' },

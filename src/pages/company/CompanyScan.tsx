@@ -4,7 +4,8 @@ import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 import { FileDropzone } from '@/components/FileDropzone';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
-import { apiClient, ApiError, ScanResponse, ScanReportItem, SimilarityFinding } from '@/services/apiClient';
+import { apiClient, ApiError } from '@/lib/apiClient';
+import type { ScanResponse, ScanReportItem, SimilarityFinding } from '@/lib/apiTypes';
 import { useToast } from '@/hooks/use-toast';
 import {
   Dialog,

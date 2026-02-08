@@ -13,6 +13,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { AccessibilitySettings } from '@/components/AccessibilitySettings';
 import { BackendStatus } from '@/components/BackendStatus';
+import { AuthStatus } from '@/components/AuthStatus';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import {
@@ -150,7 +151,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
           {/* Right side actions */}
           <div className="flex items-center gap-2">
-            <BackendStatus />
+            <BackendStatus showUrl />
+            <AuthStatus showRole />
             <AccessibilitySettings />
           </div>
         </header>

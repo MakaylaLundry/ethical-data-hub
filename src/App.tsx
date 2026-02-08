@@ -12,6 +12,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Onboarding from "./pages/Onboarding";
+import IntegrationCheck from "./pages/IntegrationCheck";
 import NotFound from "./pages/NotFound";
 
 // Artist pages
@@ -41,6 +42,7 @@ const App = () => (
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/onboarding" element={<Onboarding />} />
+                <Route path="/integration-check" element={<IntegrationCheck />} />
 
                 {/* Artist routes */}
                 <Route path="/artist/artworks" element={<ArtistArtworks />} />

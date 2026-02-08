@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { apiClient } from '@/services/apiClient';
+import { apiClient, ApiError } from '@/lib/apiClient';
 
 export type UserRole = 'artist' | 'company' | null;
 
@@ -50,19 +50,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const token = await getAccessTokenSilently();
           apiClient.setAccessToken(token);
           
-          try {
-            // Try to fetch from backend first
-            const profile = await apiClient.getUserProfile();
-            setRoleState(profile.role);
-          } catch (profileError: unknown) {
-            // If 404, endpoint doesn't exist yet - use localStorage fallback
-            if (profileError instanceof Error && 'status' in profileError && (profileError as { status: number }).status === 404) {
-              const savedRole = localStorage.getItem('user_role');
-              setRoleState(savedRole as UserRole);
-            } else {
-              throw profileError;
-            }
+        try {
+          // Try to fetch role from backend using auth/me endpoint
+          const authResult = await apiClient.getAuthMe();
+          // If backend returns role in the response, use it
+          if (authResult.data?.role) {
+            setRoleState(authResult.data.role as UserRole);
+          } else {
+            // Otherwise use localStorage fallback
+            const savedRole = localStorage.getItem('user_role');
+            setRoleState(savedRole as UserRole);
           }
+        } catch (profileError: unknown) {
+          // If 404 or other error, use localStorage fallback
+          console.warn('Could not fetch user profile from backend:', profileError);
+          const savedRole = localStorage.getItem('user_role');
+          setRoleState(savedRole as UserRole);
+        }
         } catch (error) {
           console.error('Failed to get access token or fetch profile:', error);
           apiClient.setAccessToken(null);
@@ -118,20 +122,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const setRole = async (newRole: UserRole) => {
     if (newRole) {
-      // Save to localStorage as fallback
+      // Save to localStorage (primary persistence for now)
       localStorage.setItem('user_role', newRole);
-      
-      try {
-        // Try to save to backend (will fail with 404 until endpoint exists)
-        await apiClient.updateUserProfile({ role: newRole });
-      } catch (error: unknown) {
-        // If 404, backend endpoint doesn't exist yet - that's okay
-        if (!(error instanceof Error && 'status' in error && (error as { status: number }).status === 404)) {
-          console.error('Failed to save role to backend:', error);
-        }
-      }
-      
       setRoleState(newRole);
+      // Note: When backend adds PUT /api/v1/user/profile, sync here
     } else {
       localStorage.removeItem('user_role');
       setRoleState(null);
