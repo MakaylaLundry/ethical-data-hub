@@ -1,140 +1,198 @@
 
-
-# Plan: Fix Role Persistence with Backend Storage and Auth0 Audience Configuration
+# Plan: Align Frontend with Backend API and Implement Role Persistence
 
 ## Problem Summary
 
-There are two related issues causing the dashboard to behave incorrectly:
+The frontend is calling endpoints that don't exist on your backend:
+- Frontend calls `GET /api/v1/user/profile` - doesn't exist
+- Frontend calls `PUT /api/v1/user/profile` - doesn't exist
 
-1. **Role resets on page refresh/navigation**: The selected role (Artist/Company) is stored in React state, which resets whenever the page reloads or the user navigates.
+Your backend currently has:
+- `GET /health` - health check
+- `GET /auth/me` - returns current authenticated subject
+- `GET /artist/stub` - artist role check
+- `GET /company/stub` - company role check
 
-2. **Auth0 access token not configured for backend API**: Without the `audience` parameter, Auth0 returns an opaque token that your backend cannot validate, causing API calls to fail.
+## Solution: Two-Phase Approach
 
-## Solution Overview
+Since you control the backend, the recommended approach is:
 
-We'll implement a complete fix by:
-- Storing user roles in your backend database (persisted across sessions)
-- Configuring Auth0 to issue valid JWT access tokens for your backend API
-- Fetching the role on app load and keeping the UI in sync
+**Phase 1 (Frontend - I will implement):** Update the frontend to work gracefully while role endpoints are being added to your backend
+
+**Phase 2 (Backend - you implement):** Add the user profile endpoints to your backend
 
 ---
 
-## Technical Implementation
+## Phase 1: Frontend Changes
 
-### Step 1: Database Schema for User Roles
+### 1. Update API Client
 
-Create a `user_profiles` table to store the user's role, linked to their Auth0 user ID:
+Replace the user profile endpoint paths to match a standard pattern:
 
-```sql
--- Create enum for user roles
-CREATE TYPE public.user_role AS ENUM ('artist', 'company');
-
--- Create profiles table
-CREATE TABLE public.user_profiles (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  auth0_sub TEXT UNIQUE NOT NULL,
-  role user_role NULL,
-  email TEXT,
-  name TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Enable RLS
-ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
-
--- RLS policies - users can only access their own profile
--- (Backend validates auth0_sub from JWT)
+```
+GET  /api/v1/user/profile  (keep as-is, backend will add)
+PUT  /api/v1/user/profile  (keep as-is, backend will add)
 ```
 
-### Step 2: Backend API Integration
+### 2. Update AuthContext to Handle Missing Endpoints Gracefully
 
-Add two new API endpoints to your existing backend (`apiClient.ts`):
-
-```text
-GET  /api/v1/user/profile  -> { role, email, name, auth0_sub }
-PUT  /api/v1/user/profile  -> { role } (sets the user's role)
-```
-
-The frontend will:
-- Call `GET /api/v1/user/profile` after login to check if user has a role
-- Call `PUT /api/v1/user/profile` during onboarding to set the role
-
-### Step 3: Auth0 Audience Configuration
-
-Update `Auth0Provider.tsx` to include the `audience` parameter:
+Modify `AuthContext.tsx` to:
+- Try to fetch profile from backend
+- If endpoint returns 404 (not found), treat user as not having a role yet
+- Fall back to localStorage temporarily while backend endpoint is pending
+- Once backend endpoint is ready, role persists across all devices
 
 ```tsx
-authorizationParams={{
-  redirect_uri: window.location.origin,
-  audience: import.meta.env.VITE_AUTH0_AUDIENCE, // Your backend API identifier
-}}
-```
-
-This ensures Auth0 returns a JWT that your backend can validate.
-
-### Step 4: Updated Auth Flow
-
-```text
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Login     │────▶│  Auth0      │────▶│  Get Token  │────▶│  Fetch Role │
-│   Page      │     │  Redirect   │     │  + Set API  │     │  from API   │
-└─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘
-                                                                   │
-                           ┌───────────────────────────────────────┼───────┐
-                           │                                       ▼       │
-                           │   Has Role?                                   │
-                           │   ├── YES → Navigate to Dashboard             │
-                           │   └── NO  → Navigate to Onboarding            │
-                           └───────────────────────────────────────────────┘
-```
-
-### Step 5: AuthContext Changes
-
-Update `AuthContext.tsx` to:
-
-1. Fetch user profile from backend after authentication
-2. Store role in state from API response
-3. Send role update to backend during onboarding
-
-```tsx
-// After getting access token
 useEffect(() => {
-  const fetchUserProfile = async () => {
+  const syncTokenAndFetchProfile = async () => {
     if (auth0IsAuthenticated) {
-      const token = await getAccessTokenSilently();
-      apiClient.setAccessToken(token);
-      
+      setIsRoleLoading(true);
       try {
-        const profile = await apiClient.getUserProfile();
-        setRoleState(profile.role);
-      } catch (err) {
-        // Profile doesn't exist yet - that's okay, user will onboard
+        const token = await getAccessTokenSilently();
+        apiClient.setAccessToken(token);
+        
+        try {
+          // Try to fetch from backend first
+          const profile = await apiClient.getUserProfile();
+          setRoleState(profile.role);
+        } catch (profileError: any) {
+          // If 404, endpoint doesn't exist yet - use localStorage fallback
+          if (profileError.status === 404) {
+            const savedRole = localStorage.getItem('user_role');
+            setRoleState(savedRole as UserRole);
+          } else {
+            throw profileError;
+          }
+        }
+      } catch (error) {
+        console.error('Failed to get access token or fetch profile:', error);
+        apiClient.setAccessToken(null);
         setRoleState(null);
+      } finally {
+        setIsRoleLoading(false);
       }
+    } else {
+      apiClient.setAccessToken(null);
+      setRoleState(null);
     }
   };
-  fetchUserProfile();
-}, [auth0IsAuthenticated]);
+
+  syncTokenAndFetchProfile();
+}, [auth0IsAuthenticated, getAccessTokenSilently]);
 ```
 
-### Step 6: Onboarding Update
-
-Update `Onboarding.tsx` to save role to backend:
+### 3. Update setRole Function
 
 ```tsx
-const handleContinue = async () => {
-  setIsSubmitting(true);
-  
-  // Save role to backend
-  await apiClient.updateUserProfile({ role: selectedRole });
-  
-  // Update local state
-  setRole(selectedRole);
-  
-  // Navigate to dashboard
-  navigate(selectedRole === 'artist' ? '/artist/artworks' : '/company/scan');
+const setRole = async (newRole: UserRole) => {
+  if (newRole) {
+    // Save to localStorage as fallback
+    localStorage.setItem('user_role', newRole);
+    
+    try {
+      // Try to save to backend (will fail with 404 until endpoint exists)
+      await apiClient.updateUserProfile({ role: newRole });
+    } catch (error: any) {
+      // If 404, backend endpoint doesn't exist yet - that's okay
+      if (error.status !== 404) {
+        console.error('Failed to save role to backend:', error);
+      }
+    }
+    
+    setRoleState(newRole);
+  } else {
+    localStorage.removeItem('user_role');
+    setRoleState(null);
+  }
 };
+```
+
+### 4. Add URL-based Role Detection as Fallback
+
+Update `DashboardLayout.tsx` to infer role from URL when state is not available:
+
+```tsx
+const location = useLocation();
+
+// Infer role from URL path as fallback
+const inferredRole = location.pathname.startsWith('/artist') 
+  ? 'artist' 
+  : location.pathname.startsWith('/company') 
+    ? 'company' 
+    : null;
+
+const effectiveRole = role || inferredRole;
+const navItems = effectiveRole === 'artist' ? artistNavItems : companyNavItems;
+const dashboardTitle = effectiveRole === 'artist' ? 'Artist Dashboard' : 'Company Dashboard';
+```
+
+---
+
+## Phase 2: Backend Changes (For You to Implement)
+
+Add these endpoints to your backend:
+
+### GET /api/v1/user/profile
+
+Returns the authenticated user's profile including their role.
+
+**Request Headers:**
+```
+Authorization: Bearer <jwt_token>
+```
+
+**Response (200 OK):**
+```json
+{
+  "ok": true,
+  "data": {
+    "auth0_sub": "auth0|abc123",
+    "role": "artist",  // or "company" or null
+    "email": "user@example.com",
+    "name": "John Doe"
+  }
+}
+```
+
+**Response (404) if user has no profile yet:**
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "User profile not found"
+  }
+}
+```
+
+### PUT /api/v1/user/profile
+
+Creates or updates the user's profile (role selection).
+
+**Request Headers:**
+```
+Authorization: Bearer <jwt_token>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "role": "artist"  // or "company"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "ok": true,
+  "data": {
+    "auth0_sub": "auth0|abc123",
+    "role": "artist",
+    "email": "user@example.com",
+    "name": "John Doe"
+  }
+}
 ```
 
 ---
@@ -143,42 +201,34 @@ const handleContinue = async () => {
 
 | File | Changes |
 |------|---------|
-| `src/providers/Auth0Provider.tsx` | Add `audience` to authorizationParams |
-| `src/services/apiClient.ts` | Add `getUserProfile()` and `updateUserProfile()` methods |
-| `src/contexts/AuthContext.tsx` | Fetch role from API on login, add loading state for role fetch |
-| `src/pages/Onboarding.tsx` | Save role to backend before navigating |
-| `.env` | Ensure `VITE_AUTH0_AUDIENCE` is set (you confirmed you have this) |
+| `src/contexts/AuthContext.tsx` | Add localStorage fallback, handle 404 gracefully |
+| `src/components/layouts/DashboardLayout.tsx` | Add URL-based role inference as fallback |
+| `src/pages/Onboarding.tsx` | Ensure role saves to both localStorage and backend |
 
 ---
 
-## Auth0 Dashboard Action Required
+## Expected Behavior
 
-You mentioned you have an Auth0 API Identifier (audience). Make sure:
-
-1. The `VITE_AUTH0_AUDIENCE` environment variable is set to your API Identifier
-2. Your backend validates tokens against this same audience
-
----
-
-## Backend Endpoint Expectations
-
-Your backend at `http://149.28.127.248` needs these endpoints:
-
-| Endpoint | Method | Request | Response |
-|----------|--------|---------|----------|
-| `/api/v1/user/profile` | GET | — | `{ auth0_sub, role, email, name }` |
-| `/api/v1/user/profile` | PUT | `{ role: "artist" \| "company" }` | `{ success: true }` |
-
-**Does your backend already have these endpoints, or should I include instructions to add them?**
-
----
-
-## Expected Behavior After Fix
-
+### Before Backend Endpoints Exist:
 1. User logs in via Auth0
-2. Frontend fetches user profile from backend
-3. If role exists → Navigate directly to correct dashboard
-4. If role is null → Navigate to Onboarding
-5. After selecting role in Onboarding → Role is saved to backend
-6. On future logins (any device/browser) → Role is remembered
+2. Frontend tries to fetch profile, gets 404
+3. Falls back to localStorage for role
+4. User completes onboarding, role saved to localStorage
+5. Future page loads use localStorage role
+6. Navigation works correctly for Artist vs Company dashboards
 
+### After You Add Backend Endpoints:
+1. User logs in via Auth0
+2. Frontend fetches profile from backend successfully
+3. Role is synchronized across all devices/browsers
+4. localStorage no longer needed (but still used as backup)
+
+---
+
+## Summary of Changes
+
+The key improvements:
+1. **Graceful degradation**: Frontend works even when backend endpoints don't exist yet
+2. **URL-based role inference**: Dashboard navigation always shows correct items based on URL path
+3. **localStorage fallback**: Role persists locally until backend is ready
+4. **Backend-first when available**: Once backend endpoints exist, they take priority
