@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Palette, Building2, ArrowRight } from 'lucide-react';
+import { Palette, Building2, ArrowRight, Loader2 } from 'lucide-react';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
 import { Logo } from '@/components/Logo';
 import { InkAccent } from '@/components/InkAccent';
@@ -9,20 +9,35 @@ import { cn } from '@/lib/utils';
 
 export default function Onboarding() {
   const [selectedRole, setSelectedRole] = useState<UserRole>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const { setRole, isAuthenticated } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { setRole, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if not authenticated
+  // Redirect if not authenticated (after loading is complete)
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isLoading, isAuthenticated, navigate]);
+
+  // Show loading state while Auth0 is checking session
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated
   if (!isAuthenticated) {
-    navigate('/login');
     return null;
   }
 
   const handleContinue = async () => {
     if (!selectedRole) return;
     
-    setIsLoading(true);
+    setIsSubmitting(true);
     setRole(selectedRole);
     
     // Navigate to appropriate dashboard
@@ -127,11 +142,11 @@ export default function Onboarding() {
         <div className="flex justify-center">
           <Button
             size="lg"
-            disabled={!selectedRole || isLoading}
+            disabled={!selectedRole || isSubmitting}
             onClick={handleContinue}
             className="gap-2 min-w-[200px]"
           >
-            {isLoading ? 'Setting up...' : 'Continue'}
+            {isSubmitting ? 'Setting up...' : 'Continue'}
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
