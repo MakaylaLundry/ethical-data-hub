@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Building2, Palette, CheckCircle, Mail } from 'lucide-react';
+import { ArrowRight, Building2, Palette, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AccessibilitySettings } from '@/components/AccessibilitySettings';
 import { Logo } from '@/components/Logo';
@@ -186,27 +186,6 @@ export default function Landing() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Contact the Founders */}
-      <section className="py-12 px-4 bg-accent/30">
-        <div className="container max-w-4xl mx-auto text-center">
-          <p className="ink-section-title mb-2">Support</p>
-          <h2 className="font-serif text-xl md:text-2xl font-semibold mb-3">
-            Contact the Founders
-          </h2>
-          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            If something isn't working or you have a concern, you can contact the team directly.
-          </p>
-          <Button 
-            variant="outline" 
-            className="gap-2"
-            onClick={() => window.open('mailto:lundrymakayla@gmail.com,rfarrales@gmail.com', '_blank')}
-          >
-            <Mail className="h-4 w-4" />
-            Email the Founders
-          </Button>
         </div>
       </section>
 
