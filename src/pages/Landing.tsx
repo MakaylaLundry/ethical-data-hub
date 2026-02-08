@@ -1,13 +1,11 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Building2, Palette, CheckCircle } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
 import { AccessibilitySettings } from '@/components/AccessibilitySettings';
 import { Logo } from '@/components/Logo';
 import { InkAccent, InkDivider } from '@/components/InkAccent';
 import { Button } from '@/components/ui/button';
 
 export default function Landing() {
-  const { isAuthenticated, role } = useAuth();
   return (
     <div className="min-h-screen bg-background">
       {/* Header - Editorial masthead style */}
