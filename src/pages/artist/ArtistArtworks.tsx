@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Image as ImageIcon, Tag, Trash2, Edit, Loader2 } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { Plus, Image as ImageIcon, Tag, Trash2, Edit, Loader2, AlertCircle } from 'lucide-react';
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 import { StatusBadge } from '@/components/StatusBadge';
-import { InkDivider } from '@/components/InkAccent';
 import { Button } from '@/components/ui/button';
-import { getArtworks, revokeTag, ArtworkTag } from '@/services/api';
+import { apiClient, ApiError, ArtistTag } from '@/services/apiClient';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,26 +19,28 @@ import {
 import { useToast } from '@/hooks/use-toast';
 
 export default function ArtistArtworks() {
-  const { user } = useAuth();
   const { toast } = useToast();
-  const [artworks, setArtworks] = useState<ArtworkTag[]>([]);
+  const [artworks, setArtworks] = useState<ArtistTag[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadArtworks();
   }, []);
 
   const loadArtworks = async () => {
-    if (!user) return;
     setIsLoading(true);
+    setError(null);
     try {
-      const data = await getArtworks(user.id);
+      const data = await apiClient.getArtistTags();
       setArtworks(data);
-    } catch (error) {
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : 'Could not load artworks. Please try again.';
+      setError(message);
       toast({
         title: 'Error',
-        description: 'Could not load artworks. Please try again.',
+        description: message,
         variant: 'destructive',
       });
     } finally {
@@ -51,16 +51,17 @@ export default function ArtistArtworks() {
   const handleRevoke = async (tagId: string) => {
     setDeletingId(tagId);
     try {
-      await revokeTag(tagId);
+      await apiClient.revokeTag(tagId);
       setArtworks(artworks.filter(a => a.tag_id !== tagId));
       toast({
         title: 'Tag revoked',
         description: 'The security tag has been removed.',
       });
-    } catch (error) {
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : 'Could not revoke tag. Please try again.';
       toast({
         title: 'Error',
-        description: 'Could not revoke tag. Please try again.',
+        description: message,
         variant: 'destructive',
       });
     } finally {
@@ -87,12 +88,23 @@ export default function ArtistArtworks() {
         </Link>
       </div>
 
+      {/* Error display */}
+      {error && (
+        <div className="mb-6 p-4 rounded-sm bg-destructive/10 border border-destructive/20 flex items-center gap-3 text-destructive">
+          <AlertCircle className="h-5 w-5 flex-shrink-0" />
+          <p className="text-sm">{error}</p>
+          <Button variant="outline" size="sm" onClick={loadArtworks} className="ml-auto">
+            Retry
+          </Button>
+        </div>
+      )}
+
       {/* Content */}
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
-      ) : artworks.length === 0 ? (
+      ) : artworks.length === 0 && !error ? (
         <div className="ink-card text-center py-16">
           <div className="p-4 rounded-sm bg-accent inline-block mb-4">
             <ImageIcon className="h-8 w-8 text-muted-foreground" />
@@ -114,11 +126,17 @@ export default function ArtistArtworks() {
             <div key={artwork.id} className="ink-card-hover group">
               {/* Image Preview */}
               <div className="aspect-video rounded-sm bg-accent overflow-hidden mb-4">
-                <img
-                  src={artwork.file_url}
-                  alt={artwork.file_name}
-                  className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                />
+                {artwork.file_url ? (
+                  <img
+                    src={artwork.file_url}
+                    alt={artwork.file_name}
+                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                )}
               </div>
 
               {/* Info */}
@@ -149,6 +167,7 @@ export default function ArtistArtworks() {
 
                 <p className="text-xs text-muted-foreground">
                   Created {new Date(artwork.created_at).toLocaleDateString()}
+                  {artwork.version && ` • v${artwork.version}`}
                 </p>
 
                 {/* Actions */}
