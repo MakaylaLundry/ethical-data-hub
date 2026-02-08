@@ -122,13 +122,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const setRole = async (newRole: UserRole) => {
     if (newRole) {
-      // Save to localStorage (primary persistence for now)
-      localStorage.setItem('user_role', newRole);
+      // Immediately update local state for instant UI feedback
       setRoleState(newRole);
-      // Note: When backend adds PUT /api/v1/user/profile, sync here
+      // Save to localStorage as persistent fallback
+      localStorage.setItem('user_role', newRole);
+      
+      // TODO: When backend adds PUT /api/v1/user/profile, sync here
+      // try {
+      //   await apiClient.put('/api/v1/user/profile', { role: newRole });
+      // } catch (error) {
+      //   console.warn('Failed to sync role to backend:', error);
+      // }
     } else {
-      localStorage.removeItem('user_role');
       setRoleState(null);
+      localStorage.removeItem('user_role');
     }
   };
 
