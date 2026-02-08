@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Auth0ProviderWithNavigate } from "@/providers/Auth0Provider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
 
@@ -28,38 +29,40 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AccessibilityProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              {/* Public routes */}
-              <Route path="/" element={<Landing />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/onboarding" element={<Onboarding />} />
+      <BrowserRouter>
+        <Auth0ProviderWithNavigate>
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <Routes>
+                {/* Public routes */}
+                <Route path="/" element={<Landing />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/onboarding" element={<Onboarding />} />
 
-              {/* Artist routes */}
-              <Route path="/artist/artworks" element={<ArtistArtworks />} />
-              <Route path="/artist/create" element={<ArtistCreateTag />} />
-              <Route path="/artist/compliance" element={<ArtistCompliance />} />
+                {/* Artist routes */}
+                <Route path="/artist/artworks" element={<ArtistArtworks />} />
+                <Route path="/artist/create" element={<ArtistCreateTag />} />
+                <Route path="/artist/compliance" element={<ArtistCompliance />} />
 
-              {/* Company routes */}
-              <Route path="/company/profile" element={<CompanyProfile />} />
-              <Route path="/company/scan" element={<CompanyScan />} />
-              <Route path="/company/history" element={<CompanyHistory />} />
+                {/* Company routes */}
+                <Route path="/company/profile" element={<CompanyProfile />} />
+                <Route path="/company/scan" element={<CompanyScan />} />
+                <Route path="/company/history" element={<CompanyHistory />} />
 
-              {/* Redirects */}
-              <Route path="/artist" element={<Navigate to="/artist/artworks" replace />} />
-              <Route path="/company" element={<Navigate to="/company/scan" replace />} />
+                {/* Redirects */}
+                <Route path="/artist" element={<Navigate to="/artist/artworks" replace />} />
+                <Route path="/company" element={<Navigate to="/company/scan" replace />} />
 
-              {/* 404 */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
+                {/* 404 */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </TooltipProvider>
+          </AuthProvider>
+        </Auth0ProviderWithNavigate>
+      </BrowserRouter>
     </AccessibilityProvider>
   </QueryClientProvider>
 );
