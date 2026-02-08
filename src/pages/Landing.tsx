@@ -202,7 +202,7 @@ export default function Landing() {
             <span className="ml-2">— Ethical AI Data Sourcing</span>
           </div>
           <p className="text-sm text-muted-foreground">
-            © 2024 Inkscape. All rights reserved.
+            © 2026 Inkscape. All rights reserved.
           </p>
         </div>
       </footer>
