@@ -172,7 +172,7 @@ export default function ArtistCreateTag() {
                   {useCases.map((useCase) => (
                     <div key={useCase.id} className="flex items-center space-x-2">
                       {useCase.id === 'other' ? (
-                        <Popover>
+                        <Popover open={allowedUseCases.includes('other')}>
                           <div className="flex items-center space-x-2">
                             <Checkbox
                               id={useCase.id}
@@ -182,31 +182,29 @@ export default function ArtistCreateTag() {
                             <PopoverTrigger asChild>
                               <label
                                 htmlFor={useCase.id}
-                                className="text-sm cursor-pointer underline decoration-dashed underline-offset-2"
+                                className="text-sm cursor-pointer"
                               >
                                 {useCase.label}
                               </label>
                             </PopoverTrigger>
                           </div>
-                          {allowedUseCases.includes('other') && (
-                            <PopoverContent className="w-80" align="start">
-                              <div className="space-y-2">
-                                <Label htmlFor="other-use-case" className="text-sm font-medium">
-                                  Specify allowed use case
-                                </Label>
-                                <Input
-                                  id="other-use-case"
-                                  placeholder="e.g., Educational materials only..."
-                                  value={otherUseCaseText}
-                                  onChange={(e) => setOtherUseCaseText(e.target.value)}
-                                  className="text-sm"
-                                />
-                                <p className="text-xs text-muted-foreground">
-                                  Describe what is allowed if not listed above
-                                </p>
-                              </div>
-                            </PopoverContent>
-                          )}
+                          <PopoverContent className="w-80" align="start">
+                            <div className="space-y-2">
+                              <Label htmlFor="other-use-case" className="text-sm font-medium">
+                                Specify allowed use case
+                              </Label>
+                              <Input
+                                id="other-use-case"
+                                placeholder="e.g., Educational materials only..."
+                                value={otherUseCaseText}
+                                onChange={(e) => setOtherUseCaseText(e.target.value)}
+                                className="text-sm"
+                              />
+                              <p className="text-xs text-muted-foreground">
+                                Describe what is allowed if not listed above
+                              </p>
+                            </div>
+                          </PopoverContent>
                         </Popover>
                       ) : (
                         <>
