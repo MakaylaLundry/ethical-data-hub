@@ -253,15 +253,9 @@
     letter-spacing: -0.02em;
   }
 
-  /* Smooth text size transitions - exclude accessibility panel */
+  /* Smooth text size transitions */
   html {
     transition: font-size 0.15s ease-out;
-  }
-
-  /* Accessibility panel uses fixed sizing to prevent jitter */
-  .accessibility-panel,
-  .accessibility-panel * {
-    font-size: inherit !important;
   }
 }
 
